@@ -1,0 +1,3 @@
+openra_openrauseraccounts_controller:
+    path: /openra/{type}/{fingerprint}
+    defaults: { _controller: openra.openrauseraccounts.controller:fetchinfo }

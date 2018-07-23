@@ -1,0 +1,31 @@
+/* General */
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+/* Table rows */
+tr:nth-child(odd), #spacer ~ tr:not(:hover):nth-child(even) {
+  background-color: #ECF3F7;
+}
+
+tr:nth-child(even), #spacer ~ tr:not(:hover):nth-child(odd) {
+  background-color: #E1EBF2;
+}
+
+#spacer, .breaker {
+  background-color: #fff !important;
+}
+
+/* Order icons */
+table tr:first-child td.actions .up, table tr:last-child td.actions .down {
+	display: none;
+}
+
+table tr:first-child td.actions .up-disabled, table tr:last-child td.actions .down-disabled {
+	display: inline !important;
+}
