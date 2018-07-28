@@ -31,7 +31,7 @@ class core
 	}
 
 	/**
-	 * Returns the sql SELECT statement to fetch player authentication data.
+	 * Returns the sql SELECT statement to fetch general player data.
 	 *
 	 * @param var $fingerprint
 	 * @return string DBal SELECT statement
@@ -53,48 +53,53 @@ class core
 	}
 
 	/**
-	 * Returns the sql SELECT statement to fetch profile badge data.
-	 * Accepts either a fingerprint or user id as parameters.
-	 *
+	 * Returns the sql SELECT statement to fetch user badge data.
+	 * Accepts a fingerprint.
 	 * @param var $fingerprint
+	 * @return string DBal SELECT statement
+	 * @link https://wiki.phpbb.com/Dbal.sql_build_query
+	 */
+	public function get_ubadge_sql_by_key($fingerprint)
+	{
+		$sql_array = array(
+			'SELECT' => 'badge.badge_label, badge.badge_icon_24',
+			'FROM' => array(
+				USERS_TABLE => 'user',
+				$this->table_prefix . 'openra_keys' => 'pubkey',
+				$this->table_prefix . 'openra_badges' => 'badge',
+				$this->table_prefix . 'openra_user_badges' => 'ubadge',
+			),
+			'WHERE' => 'pubkey.fingerprint = "' . $this->db->sql_escape($fingerprint) . '"
+				AND pubkey.user_id = user.user_id
+				AND ubadge.user_id = user.user_id
+				AND ubadge.badge_id = badge.badge_id',
+			'ORDER_BY' => 'ubadge.badge_order',
+		);
+
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+		return $sql;
+	}
+
+	/**
+	 * Returns the sql SELECT statement to fetch user badge data.
+	 * Accepts a user id.
+	 *
 	 * @param var $user_id
 	 * @return string DBal SELECT statement
 	 * @link https://wiki.phpbb.com/Dbal.sql_build_query
 	 */
-	public function get_badge_sql($fingerprint, $user_id)
+	public function get_ubadge_sql_by_id($user_id)
 	{
-
-		if ($fingerprint && !$user_id)
-		{
-			$sql_array = array(
-				'SELECT' => 'badge.badge_label, badge.badge_icon_24',
-				'FROM' => array(
-					USERS_TABLE => 'user',
-					$this->table_prefix . 'openra_keys' => 'pubkey',
-					$this->table_prefix . 'openra_badges' => 'badge',
-					$this->table_prefix . 'openra_user_badges' => 'ubadge',
-				),
-				'WHERE' => 'pubkey.fingerprint = "' . $this->db->sql_escape($fingerprint) . '"
-					AND pubkey.user_id = user.user_id
-					AND ubadge.user_id = user.user_id
-					AND ubadge.badge_id = badge.badge_id',
-				'ORDER_BY' => 'ubadge.badge_order',
-			);
-		}
-
-		if (!$fingerprint && $user_id)
-		{
-			$sql_array = array(
-				'SELECT' => 'ubadge.item_id, ubadge.badge_order, badge.badge_label, badge.badge_icon_24',
-				'FROM' => array(
-					$this->table_prefix . 'openra_badges' => 'badge',
-					$this->table_prefix . 'openra_user_badges' => 'ubadge',
-				),
-				'WHERE' => 'ubadge.user_id = ' . (int) $user_id . '
-					AND ubadge.badge_id = badge.badge_id',
-				'ORDER_BY' => 'ubadge.badge_order',
-			);
-		}
+		$sql_array = array(
+			'SELECT' => 'ubadge.item_id, ubadge.badge_order, badge.badge_label, badge.badge_icon_24',
+			'FROM' => array(
+				$this->table_prefix . 'openra_badges' => 'badge',
+				$this->table_prefix . 'openra_user_badges' => 'ubadge',
+			),
+			'WHERE' => 'ubadge.user_id = ' . (int) $user_id . '
+				AND ubadge.badge_id = badge.badge_id',
+			'ORDER_BY' => 'ubadge.badge_order',
+		);
 
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		return $sql;
@@ -182,5 +187,4 @@ class core
 
 		return true;
 	}
-
 }
