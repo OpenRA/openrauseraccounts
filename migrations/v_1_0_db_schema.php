@@ -87,7 +87,7 @@ class v_1_0_db_schema extends \phpbb\db\migration\migration
 					'COLUMNS' => array(
 						'item_id'	=> array('UINT', null, 'auto_increment'),
 						'badge_id'	=> array('UINT', 0),
-						'user_id'	=> array('VCHAR:255', ''),
+						'user_id'	=> array('UINT', 0)
 					),
 					'PRIMARY_KEY' => 'item_id'
 				),
