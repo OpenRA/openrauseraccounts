@@ -84,8 +84,7 @@ class useraccounts_module
 						WHERE user_id = $this_user_id";
 					if (!($result = $this->db->sql_query($sql)))
 					{
-						$message = $this->user->lang('UCP_KEY_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->user->lang('UCP_KEY_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 					$keys = (int) $this->db->sql_fetchfield('count');
 					$this->db->sql_freeresult($result);
@@ -95,8 +94,7 @@ class useraccounts_module
 						// Check form key.
 						if (!check_form_key($form_key))
 						{
-							$message = $this->user->lang('FORM_INVALID') . '<br><br>' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-							trigger_error($message);
+							trigger_error($this->user->lang('FORM_INVALID') . '<br><br>' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 						}
 					}
 
@@ -112,8 +110,7 @@ class useraccounts_module
 
 					if (!$fingerprint)
 					{
-						$message = $this->user->lang('UCP_KEY_INVALID') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->user->lang('UCP_KEY_INVALID') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 
 					// Reject key duplicates.
@@ -123,8 +120,7 @@ class useraccounts_module
 						OR public_key = "' . $this->db->sql_escape($pubkey) . '"';
 					if (!($result = $this->db->sql_query($sql)))
 					{
-						$message = $this->user->lang('UCP_DUPLICATE_KEY_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->user->lang('UCP_DUPLICATE_KEY_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 					$duplicates = (int) $this->db->sql_fetchfield('count');
 					$this->db->sql_freeresult($result);
@@ -135,8 +131,7 @@ class useraccounts_module
 							WHERE fingerprint = "' . $this->db->sql_escape($fingerprint) . '"';
 						if (!($result = $this->db->sql_query($sql)))
 						{
-							$message = $this->user->lang('UCP_CHECK_REVOKE_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-							trigger_error($message);
+							trigger_error($this->user->lang('UCP_CHECK_REVOKE_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 						}
 						$revoked = (bool) $this->db->sql_fetchfield('keyrevoked');
 
@@ -193,8 +188,7 @@ class useraccounts_module
 						$this->db->sql_query($sql);
 
 						meta_refresh(3, $this->u_action);
-						$message = $this->user->lang('UCP_INPUT_SAVED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->user->lang('UCP_INPUT_SAVED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 				}
 
@@ -253,8 +247,7 @@ class useraccounts_module
 								$marked_keys_sql";
 							if (!($result = $this->db->sql_query($sql)))
 							{
-								$message = $this->user->lang('UCP_KEY_REVOKE_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-								trigger_error($message);
+								trigger_error($this->user->lang('UCP_KEY_REVOKE_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 							}
 						}
 					}
@@ -267,8 +260,7 @@ class useraccounts_module
 					AND revoked = FALSE";
 				if (!($result = $this->db->sql_query($sql)))
 				{
-					$message = $this->user->lang('UCP_KEY_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-					trigger_error($message);
+					trigger_error($this->user->lang('UCP_KEY_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 				}
 				$keycount = (int)$this->db->sql_fetchfield('keycount');
 				$this->db->sql_freeresult($result);
@@ -288,8 +280,7 @@ class useraccounts_module
 					ORDER BY registered DESC';
 				if (!($result = $this->db->sql_query_limit($sql, $this->config['topics_per_page'], $start)))
 				{
-					$message = $this->user->lang('UCP_KEY_DATA_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-					trigger_error($message);
+					trigger_error($this->user->lang('UCP_KEY_DATA_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 				}
 
 				// Loop over retrieved key data.
@@ -325,11 +316,10 @@ class useraccounts_module
 					// Check form key.
 					if (!check_form_key($form_key))
 					{
-						$message = $this->language->lang('FORM_INVALID') . '<br><br>' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->language->lang('FORM_INVALID') . '<br><br>' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 
-					empty($markedbadges) ? $delete_sql = '' : ' AND ' . $this->db->sql_in_set('badge_id', $markedbadges, true); // true for NOT IN, false (default) for IN
+					$delete_sql = empty($markedbadges) ? '' : ' AND ' . $this->db->sql_in_set('badge_id', $markedbadges, true); // true for NOT IN, false (default) for IN
 
 					// Delete all user badges that are NOT IN the array of marked badges or all if none is selected.
 					$sql = 'DELETE FROM ' . $user_badge_table . '
@@ -346,8 +336,7 @@ class useraccounts_module
 							AND user_id = $this_user_id";
 						if (!($result = $this->db->sql_query($sql)))
 						{
-							$message = $this->user->lang('UCP_DUPLICATE_USER_BADGE_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-							trigger_error($message);
+							trigger_error($this->user->lang('UCP_DUPLICATE_USER_BADGE_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 						}
 						$duplicates = (int) $this->db->sql_fetchfield('duplcount');
 						$this->db->sql_freeresult($result);
@@ -365,13 +354,11 @@ class useraccounts_module
 					}
 					if (!$this->core->validate_badge_order($this_user_id))
 					{
-						$message = $this->user->lang('UCP_BADGE_ORDER_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->user->lang('UCP_BADGE_ORDER_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 					unset($markedbadges);
 					meta_refresh(5, $this->u_action);
-					$message = $this->user->lang('UCP_SELECTED_BADGES_SAVED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-					trigger_error($message);
+					trigger_error($this->user->lang('UCP_SELECTED_BADGES_SAVED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 				}
 
 				// Retrieve badge_ids of existing user badges.
@@ -380,8 +367,7 @@ class useraccounts_module
 					WHERE user_id = $this_user_id";
 				if (!($result = $this->db->sql_query($sql)))
 				{
-					$message = $this->user->lang('UCP_SELECTED_BADGES_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-					trigger_error($message);
+					trigger_error($this->user->lang('UCP_SELECTED_BADGES_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 				}
 
 				// Loop over existing user badges and store ids in an array.
@@ -398,8 +384,7 @@ class useraccounts_module
 					WHERE badge_default = TRUE";
 				if (!($result = $this->db->sql_query($sql)))
 				{
-					$message = $this->user->lang('UCP_AVAIL_BADGE_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-					trigger_error($message);
+					trigger_error($this->user->lang('UCP_AVAIL_BADGE_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 				}
 				$default_badge_count = (int) $this->db->sql_fetchfield('defaultcount');
 				$this->db->sql_freeresult($result);
@@ -409,8 +394,7 @@ class useraccounts_module
 					WHERE user_id = $this_user_id";
 				if (!($result = $this->db->sql_query($sql)))
 				{
-					$message = $this->user->lang('UCP_AVAIL_BADGE_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-					trigger_error($message);
+					trigger_error($this->user->lang('UCP_AVAIL_BADGE_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 				}
 				$avail_badge_count = (int) $this->db->sql_fetchfield('availcount');
 				$this->db->sql_freeresult($result);
@@ -432,8 +416,7 @@ class useraccounts_module
 						ORDER BY badge_type_name";
 					if (!($result = $this->db->sql_query($sql)))
 					{
-						$message = $this->user->lang('UCP_AVAIL_BADGES_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->user->lang('UCP_AVAIL_BADGES_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 					// Prepare an array to group badges by types.
 					$typelist = array();
@@ -478,8 +461,7 @@ class useraccounts_module
 				{
 					if (!check_link_hash($this->request->variable('hash', ''), 'useraccounts_module'))
 					{
-						$message = $this->language->lang('FORM_INVALID') . '<br><br>' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->language->lang('FORM_INVALID') . '<br><br>' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 
 					// Get current item order value
@@ -531,8 +513,7 @@ class useraccounts_module
 					WHERE user_id = $this_user_id";
 				if (!($result = $this->db->sql_query($sql)))
 				{
-					$message = $this->user->lang('UCP_UBADGE_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-					trigger_error($message);
+					trigger_error($this->user->lang('UCP_UBADGE_COUNT_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 				}
 				$ubadge_count = (int) $this->db->sql_fetchfield('ubadgecount');
 				$this->db->sql_freeresult($result);
@@ -541,16 +522,14 @@ class useraccounts_module
 				{
 					if (!$this->core->validate_badge_order($this_user_id))
 					{
-						$message = $this->user->lang('UCP_BADGE_ORDER_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->user->lang('UCP_BADGE_ORDER_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 
 					// Retrieve user badge data
-					$sql = $this->core->get_badge_sql('', $this_user_id);
+					$sql = $this->core->get_ubadge_sql_by_id($this_user_id);
 					if (!($result = $this->db->sql_query($sql)))
 					{
-						$message = $this->user->lang('UCP_UBADGE_DATA_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
-						trigger_error($message);
+						trigger_error($this->user->lang('UCP_UBADGE_DATA_QUERY_FAILED') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>'));
 					}
 
 					$spacer = false;
