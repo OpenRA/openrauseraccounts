@@ -100,12 +100,17 @@ class useraccounts_module
 						}
 					}
 
-					// Sanity check the public key.
-					if (openssl_pkey_get_public($pubkey))
+					// Sanity check the public key and calculate the fingerprint
+					$fingerprint = '';
+					$pubkey_resource = openssl_pkey_get_public($pubkey);
+					if ($pubkey_resource)
 					{
-						$fingerprint = sha1($pubkey);
+						$details = openssl_pkey_get_details($pubkey_resource);
+						if (array_key_exists('rsa', $details))
+							$fingerprint = sha1($details['rsa']['n'] . $details['rsa']['e']);
 					}
-					else
+
+					if (!$fingerprint)
 					{
 						$message = $this->user->lang('UCP_KEY_INVALID') . '<br /><br />' . $this->user->lang('RETURN_UCP', '<a href="' . $this->u_action . '">', '</a>');
 						trigger_error($message);
