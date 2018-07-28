@@ -65,7 +65,7 @@
 		</p>
 	</fieldset>
 {% endif %}
-{% if S_ACP_MODE_BADGES and S_EDIT and not S_USERS %}
+{% if S_ACP_MODE_BADGES and S_EDIT %}
     {% block javascripts %}
     <script type="text/javascript">
     // <![CDATA[
@@ -92,8 +92,8 @@
 		</dl>
 		<dl>
 			<dt><label for="default">{{ lang('ACP_BADGE_SET_DEFAULT') }}{{ lang('COLON') }}</label></dt>
-			<dd><label><input type="radio" class="radio" name="default" value="1" id="default"{% if S_DEFAULT %} checked="checked"{% endif %}/>{{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="default" value="0"{% if not S_DEFAULT %} checked="checked"{% endif %}/>{{ lang('NO') }}</label></dd>
+			<dd><label><input type="radio" class="radio" name="default" value="1" id="default"{% if S_DEFAULT %} checked="checked"{% endif %}{% if not S_ADD %}disabled{% endif %}/>{{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="default" value="0"{% if not S_DEFAULT %} checked="checked"{% endif %}{% if not S_ADD %}disabled{% endif %}/>{{ lang('NO') }}</label></dd>
 		</dl>
 		<p class="submit-buttons">
 			<input type="hidden" name="action" value="save_badge"/>
@@ -103,7 +103,7 @@
 		</p>
 	</fieldset>
 {% endif %}
-{% if S_ACP_MODE_BADGES and S_USERS and not S_EDIT %}
+{% if S_ACP_MODE_BADGES and S_USERS %}
     <table class="table1 zebra-table">
         <thead>
             <tr>

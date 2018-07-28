@@ -618,7 +618,6 @@ class badges_module
 						'badge_label' => $badge_label,
 						'badge_icon_24' => $badge_icon_url,
 						'badge_type_id' => $badge_type,
-						'badge_default' => $badge_default
 					);
 
 					if ($badge_id) // Updating badge.
@@ -635,6 +634,8 @@ class badges_module
 					}
 					else // Adding badge.
 					{
+						// Add setting for badge_default to array. This may not be changed when updating bagdes.
+						$data['badge_default'] = $badge_default;
 						// Insert badge data.
 						$sql = 'INSERT INTO ' . $badge_table . ' ' . $this->db->sql_build_array('INSERT', $data);
 						if (!($result = $this->db->sql_query($sql)))
