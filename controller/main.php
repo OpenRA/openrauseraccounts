@@ -16,16 +16,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class main
 {
-	/* @var \openra\openrauseraccounts\core\core */
-	protected $core;
-
-	/* @var \phpbb\db\driver\driver_interface */
-	protected $db;
-
-	/* @var \phpbb\config\config */
-	protected $config;
-
-	protected $table_prefix;
+	private $core;
+	private $db;
+	private $config;
+	private $table_prefix;
 
 	/**
 	 * Constructor
@@ -60,23 +54,20 @@ class main
 				$sql = $this->core->get_info_sql($fingerprint);
 				if (!($result = $this->db->sql_query($sql)))
 				{
-					echo "Error: Failed to query profile data";
-						exit;
+					return $this->get_response("Error: Failed to query profile data");
 				}
 				$data = $this->db->sql_fetchrow($result);
 				$this->db->sql_freeresult($result);
 				if (!$data)
 				{
-					echo "Error: No profile data";
-						exit;
+					return $this->get_response("Error: No profile data");
 				}
 
 				// Retrieve badge data
-				$sql = $this->core->get_badge_sql($fingerprint, '');
+				$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
 				if (!($result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges'])))
 				{
-					echo "Error: Failed to query badge data";
-						exit;
+					return $this->get_response("Error: Failed to query badge data");
 				}
 				// Store all the badge data in an array to loop over it later
 				$badges = array();
@@ -90,8 +81,7 @@ class main
 				$sql = $this->core->get_update_sql($fingerprint);
 				if (!($result = $this->db->sql_query($sql)))
 				{
-					echo "Error: Failed to update last accessed time";
-						exit;
+					return $this->get_response("Error: Failed to update last accessed time");
 				}
 
 				$yaml = "Player:\n";
@@ -114,18 +104,22 @@ class main
 					}
 				}
 
-				$response = new Response($yaml);
-				$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
-				return $response;
+				return $this->get_response($yaml);
 
 				break;
 			}
 
 			default:
 			{
-				echo "Error: Unknown route";
-				return new Response();
+				return $this->get_response("Error: Unknown route");
 			}
 		}
+	}
+
+	public function get_response($content)
+	{
+		$response = new Response($content);
+		$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
+		return $response;
 	}
 }
