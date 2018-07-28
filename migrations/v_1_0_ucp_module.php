@@ -13,25 +13,6 @@ namespace openra\openrauseraccounts\migrations;
 class v_1_0_ucp_module extends \phpbb\db\migration\migration
 {
 	/**
-	 * Check if the migration is effectively installed
-	 *
-	 * @return bool	True if this migration is installed, False if this migration is not installed
-	 * @link https://area51.phpbb.com/docs/code/3.2.x/phpbb/db/migration/migration.html#method_effectively_installed
-	 */
-	public function effectively_installed()
-	{
-		$sql = 'SELECT module_id
-			FROM ' . $this->table_prefix . 'modules' . '
-			WHERE module_class = "ucp"
-			AND module_langname = "UCP_TITLE"';
-		$result = $this->db->sql_query($sql);
-		$module_id = $this->db->sql_fetchfield('module_id');
-		$this->db->sql_freeresult($result);
-
-		return $module_id !== false;
-	}
-
-	/**
 	 * Defines other migrations to be applied first
 	 *
 	 * @return array An array of migration class names
