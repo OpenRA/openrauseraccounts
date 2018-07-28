@@ -1,0 +1,172 @@
+{% include('ucp_header.html') %}
+{% INCLUDECSS '@openra_openrauseraccounts/ucp_useraccounts.css' %}
+<h2>{{ lang('UCP_MODE_TITLE') }}</h2>
+{% set formid = lang('UCP_MODE_TITLE')|replace({' ': ''})|lower %}
+<form id="{{ formid }}" method="post" action="{{ U_POST_ACTION }}">
+	<div class="panel">
+		<div class="inner">
+			<p>{{ lang('UCP_MODE_EXPLAIN') }}</p>
+	{% if S_UCP_MODE_ADD_KEY %}
+			<fieldset class=fields2>
+				<dl>
+					<dt><label for="pubkey">{{ lang('UCP_INPUT_KEY') }}{{ lang('COLON') }}</label><br/><span>{{ lang('UCP_INPUT_KEY_EXPLAIN') }}</span></dt>
+					<dd><textarea name="pubkey" id="pubkey" rows="9" class="inputbox"></textarea></dd>
+				</dl>
+			</fieldset>
+		</div>
+	</div>
+	<fieldset class="submit-buttons">
+	{{ S_HIDDEN_FIELDS }}
+		<input type="reset" value="{{ lang('RESET') }}" name="reset" class="button2"/>
+		&nbsp;<input type="submit" name="action[submit_key]" value="{{ lang('SUBMIT') }}" class="button1"/>
+	{{ S_FORM_TOKEN }}
+	</fieldset>
+	{% endif %}
+	{% if S_UCP_MODE_MANAGE_KEYS %}
+			<div class="action-bar bar-top">
+				<div class="pagination">
+					{{ TOTAL }}
+		{% if pagination %}
+					{% include('pagination.html') %}
+		{% else %}
+					&bull;&nbsp;{{ PAGE_NUMBER }}
+		{% endif %}
+				</div>
+			</div>
+			<table class="table1">
+				<thead>
+				<tr>
+					<th class="name">{{ lang('UCP_FINGERPRINT') }}</th>
+					<th class="center">{{ lang('UCP_REGISTERED') }}</th>
+					<th class="center">{{ lang('UCP_LAST_ACCESS') }}</th>
+					<th>{{ lang('MARK') }}</th>
+				</tr>
+				</thead>
+				<tbody>
+		{% if S_KEYS %}
+				{% for row in keyrow %}
+					<tr>
+						<td>{{ row.FINGERPRINT }}</td>
+						<td class="center">{{ row.REGISTERED }}</td>
+						<td class="center">{{ row.LAST_ACCESSED }}</td>
+						<td style="width: 5%" align="center"><input type="checkbox" name="markedkeys[]" value="{{ row.ID }}"/></td>
+					</tr>
+				{% endfor %}
+		{% else %}
+					<tr>
+						<td class="bg1" colspan="4" align="center"><span class="gen">{{ lang('UCP_NO_KEYS') }}</span></td>
+					</tr>
+		{% endif %}
+				</tbody>
+			</table>
+		{% if keyrow %}
+			<div class="action-bar bottom">
+				<div class="pagination">
+					{{ TOTAL }}
+			{% if pagination %}
+					{% include('pagination.html') %}
+			{% else %}
+					&bull;&nbsp;{{ PAGE_NUMBER }}
+			{% endif %}
+				</div>
+			</div>
+			{{ S_FORM_TOKEN }}
+		</div>
+	</div>
+	<fieldset class="display-actions">
+		<input class="button2" type="submit" name="action[rev_all]" value="{{ lang('UCP_REVOKE_ALL') }}"/>
+		&nbsp;<input class="button1" type="submit" name="action[rev_marked]" value="{{ lang('UCP_REVOKE_MARKED') }}"/>
+		<div><a href="#" onclick="marklist('{{ formid }}', 'mark', true); return false;">{{ lang('MARK_ALL') }}</a> :: <a href="#" onclick="marklist('{{ formid }}', 'mark', false); return false;">{{ lang('UNMARK_ALL') }}</a></div>
+	</fieldset>
+		{% else %}
+			{{ S_FORM_TOKEN }}
+		</div>
+	</div>
+		{% endif %}
+	{% endif %}
+	{% if S_UCP_MODE_SELECT_BADGES %}
+			<h3 style="margin: 20px 0 0;">{{ lang('UCP_SELECT_BADGES_TABLE_DESC') }}</h3>
+			<table class="table1">
+				<thead>
+				<tr>
+					<th class="center">{{ lang('UCP_BADGE_ICON') }}</th>
+					<th class="center">{{ lang('UCP_BADGE_LABEL') }}</th>
+					<th>{{ lang('UCP_SELECTION') }}</th>
+				</tr>
+				</thead>
+				<tbody>
+		{% if S_AVAIL_BADGES %}
+			{% for row in s_badgerow %}
+				{% if row.BADGE_TYPE %}
+					<tr class="breaker">
+						<td colspan="3" style="text-align: center;">{{ row.BADGE_TYPE }}</td>
+					</tr>
+				{% endif %}
+					<tr>
+						<td style="text-align: center;"><img src="{{ row.BADGE_ICON_URL }}" alt="{{ row.BADGE_LABEL }}" title="{{ row.BADGE_LABEL }}"/></td>
+						<td style="text-align: center;">{{ row.BADGE_LABEL }}</td>
+						<td style="width: 5%" align="center"><input type="checkbox" name="marked_badges[]" value="{{ row.ID }}" {% if row.S_SELECTED %}checked="checked"{% endif %}/></td>
+					</tr>
+			{% endfor %}
+		{% else %}
+					<tr>
+						<td class="bg1" colspan="3" align="center"><span class="gen">{{ lang('UCP_NO_BADGES_AVAILABLE') }}</span></td>
+					</tr>
+		{% endif %}
+				</tbody>
+			</table>
+		{% if s_badgerow %}
+		{{ S_FORM_TOKEN }}
+		</div>
+	</div>
+	<fieldset class="display-actions">
+		<input class="button1" type="submit" name="action[submit_marked]" value="{{ lang('SUBMIT') }}"/>
+	</fieldset>
+		{% else %}
+			{{ S_FORM_TOKEN }}
+		</div>
+	</div>
+		{% endif %}
+	{% endif %}
+	{% if S_UCP_MODE_ORDER_BADGES %}
+		{% INCLUDEJS '@openra_openrauseraccounts/ucp_useraccounts.js' %}
+			<h3 style="margin: 20px 0 0;">{{ lang('UCP_ORDER_BADGES_TABLE_DESC') }}</h3>
+			<table class="table1">
+				<thead>
+				<tr>
+					<th class="center">{{ lang('UCP_BADGE_ICON') }}</th>
+					<th class="center">{{ lang('UCP_BADGE_LABEL') }}</th>
+					<th style="text-align: right;">{{ lang('OPTIONS') }}</th>
+				</tr>
+				</thead>
+				<tbody>
+		{% if S_BADGES %}
+				{% for row in u_badgerow %}
+					{% if row.S_SPACER %}
+					<tr id="spacer">
+						<td colspan="3" style="text-align: center;">{{ lang('UCP_BADGES_NOT_DISPLAYED') }}</td>
+					</tr>
+					{% endif %}
+					<tr>
+						<td style="text-align: center;"><img src="{{ row.BADGE_ICON_URL }}" alt="{{ row.BADGE_ICON_NAME }}" title="{{ row.BADGE_ICON_NAME }}"/></td>
+						<td style="text-align: center;">{{ row.BADGE_LABEL }}</td>
+						<td class="actions" style="text-align: right;">
+							<span class="up-disabled" style="display:none;">{{ ICON_MOVE_UP_DISABLED }}</span>
+							<span class="up"><a href="{row.U_MOVE_UP}" data-ajax="row_up">{{ ICON_MOVE_UP }}</a></span>
+							<span class="down-disabled" style="display:none;">{{ ICON_MOVE_DOWN_DISABLED }}</span>
+							<span class="down"><a href="{row.U_MOVE_DOWN}" data-ajax="row_down">{{ ICON_MOVE_DOWN }}</a></span>
+						</td>
+					</tr>
+				{% endfor %}
+		{% else %}
+					<tr>
+						<td class="bg1" colspan="3" align="center"><span class="gen">{{ lang('UCP_NO_PROFILE_BADGES') }}</span></td>
+					</tr>
+		{% endif %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	{% endif %}
+</form>
+{% include('ucp_footer.html') %}

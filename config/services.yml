@@ -1,0 +1,11 @@
+services:
+    openra.openrauseraccounts.controller:
+        class: openra\openrauseraccounts\controller\main
+        arguments:
+            - '@openra.openrauseraccounts.core'
+            - '@dbal.conn'
+            - '@config'
+    openra.openrauseraccounts.core:
+        class: openra\openrauseraccounts\core\core
+        arguments:
+            - '@dbal.conn'
