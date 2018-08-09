@@ -23,7 +23,6 @@ class core
 	public function __construct()
 	{
 		global $phpbb_container;
-
 		$this->db = $phpbb_container->get('dbal.conn');
 		$this->table_prefix = $phpbb_container->getParameter('core.table_prefix');
 		$this->path_helper = $phpbb_container->get('path_helper');
@@ -41,72 +40,81 @@ class core
 	{
 		$sql_array = array(
 			'SELECT' => 'pubkey.item_id, pubkey.user_id, pubkey.public_key, pubkey.fingerprint, pubkey.revoked, user.username',
+
 			'FROM' => array(
 				USERS_TABLE => 'user',
 				$this->table_prefix . 'openra_keys' => 'pubkey'
 			),
+
 			'WHERE' => 'pubkey.fingerprint = "' . $this->db->sql_escape($fingerprint) . '"
 				AND pubkey.user_id = user.user_id'
 		);
+
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+
 		return $sql;
 	}
 
 	/**
-	 * Returns the sql SELECT statement to fetch user badge data.
-	 * Accepts a fingerprint.
+	 * Returns the sql SELECT statement to fetch user badge data by a fingerprint.
+	 *
 	 * @param var $fingerprint
 	 * @return string DBal SELECT statement
-	 * @link https://wiki.phpbb.com/Dbal.sql_build_query
 	 */
 	public function get_ubadge_sql_by_key($fingerprint)
 	{
 		$sql_array = array(
 			'SELECT' => 'badge.badge_label, badge.badge_icon_24',
+
 			'FROM' => array(
 				USERS_TABLE => 'user',
 				$this->table_prefix . 'openra_keys' => 'pubkey',
 				$this->table_prefix . 'openra_badges' => 'badge',
 				$this->table_prefix . 'openra_user_badges' => 'ubadge',
 			),
+
 			'WHERE' => 'pubkey.fingerprint = "' . $this->db->sql_escape($fingerprint) . '"
 				AND pubkey.user_id = user.user_id
 				AND ubadge.user_id = user.user_id
 				AND ubadge.badge_id = badge.badge_id',
-			'ORDER_BY' => 'ubadge.badge_order',
+
+			'ORDER_BY' => 'ubadge.badge_order'
 		);
 
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+
 		return $sql;
 	}
 
 	/**
 	 * Returns the sql SELECT statement to fetch user badge data.
-	 * Accepts a user id.
 	 *
 	 * @param var $user_id
 	 * @return string DBal SELECT statement
-	 * @link https://wiki.phpbb.com/Dbal.sql_build_query
 	 */
 	public function get_ubadge_sql_by_id($user_id)
 	{
 		$sql_array = array(
 			'SELECT' => 'ubadge.item_id, ubadge.badge_order, badge.badge_label, badge.badge_icon_24',
+
 			'FROM' => array(
 				$this->table_prefix . 'openra_badges' => 'badge',
 				$this->table_prefix . 'openra_user_badges' => 'ubadge',
 			),
-			'WHERE' => 'ubadge.user_id = ' . (int) $user_id . '
+
+			'WHERE' => 'ubadge.user_id = ' . (int)$user_id . '
 				AND ubadge.badge_id = badge.badge_id',
-			'ORDER_BY' => 'ubadge.badge_order',
+
+			'ORDER_BY' => 'ubadge.badge_order'
 		);
 
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+
 		return $sql;
 	}
 
 	/**
-	 * Returns the sql UPDATE statement to update last accessed time
+	 * Returns the sql UPDATE statement to update last accessed time.
 	 *
 	 * @param var $fingerprint
 	 * @return string DBal UPDATE statement
@@ -118,28 +126,12 @@ class core
 		$sql_array = array(
 			'last_accessed' => $timestamp
 		);
+
 		$sql = 'UPDATE ' . $this->table_prefix . 'openra_keys' . '
 			SET ' . $this->db->sql_build_array('UPDATE', $sql_array) . '
 			WHERE fingerprint = "' . $this->db->sql_escape($fingerprint) . '"';
-		return $sql;
-	}
 
-	/**
-	 * Checks if a string is in a two dimensional array.
-	 *
-	 * @param var $needle
-	 * @param var $haystack
-	 * @return boolean
-	 */
-	public function in_2d_array($needle, $haystack)
-	{
-		foreach ($haystack as $substack)
-		{
-			if (in_array($needle, $substack))
-			{
-				return true;
-			}
-		}
+		return $sql;
 	}
 
 	/**
@@ -153,7 +145,7 @@ class core
 	}
 
 	/**
-	 * Validates the bade order an fixes it if necessary.
+	 * Validates the bade order and fixes it if necessary.
 	 * Returns true on success.
 	 *
 	 * @return bool
@@ -161,13 +153,15 @@ class core
 	public function validate_badge_order($user_id)
 	{
 		$sql = 'SELECT item_id, badge_order
-		FROM ' . $this->table_prefix . 'openra_user_badges' . '
-		WHERE user_id = ' . $user_id . '
-		ORDER BY badge_order';
+			FROM ' . $this->table_prefix . 'openra_user_badges' . '
+			WHERE user_id = ' . (int)$user_id . '
+			ORDER BY badge_order';
+
 		if (!($result = $this->db->sql_query($sql)))
 		{
 			return false;
 		}
+
 		if ($row = $this->db->sql_fetchrow($result)) // Fetch first row to use it before while loop starts.
 		{
 			$order = 0; // Loop over user badges and check the order against this counter.
