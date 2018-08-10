@@ -18,7 +18,7 @@
 	<fieldset class="submit-buttons">
 	{{ S_HIDDEN_FIELDS }}
 		<input type="reset" value="{{ lang('RESET') }}" name="reset" class="button2"/>
-		&nbsp;<input type="submit" name="action[submit_key]" value="{{ lang('SUBMIT') }}" class="button1"/>
+		&nbsp;<input type="submit" name="action[submit]" value="{{ lang('SUBMIT') }}" class="button1"/>
 	{{ S_FORM_TOKEN }}
 	</fieldset>
 	{% endif %}
@@ -105,7 +105,7 @@
 					<tr>
 						<td style="text-align: center;"><img src="{{ row.BADGE_ICON_URL }}" alt="{{ row.BADGE_LABEL }}" title="{{ row.BADGE_LABEL }}"/></td>
 						<td style="text-align: center;">{{ row.BADGE_LABEL }}</td>
-						<td style="width: 5%" align="center"><input type="checkbox" name="marked_badges[]" value="{{ row.ID }}" {% if row.S_SELECTED %}checked="checked"{% endif %}/></td>
+						<td style="width: 5%" align="center"><input type="checkbox" name="markedbadges[]" value="{{ row.ID }}" {% if row.S_SELECTED %}checked="checked"{% endif %}/></td>
 					</tr>
 			{% endfor %}
 		{% else %}
@@ -120,7 +120,7 @@
 		</div>
 	</div>
 	<fieldset class="display-actions">
-		<input class="button1" type="submit" name="action[submit_marked]" value="{{ lang('SUBMIT') }}"/>
+		<input class="button1" type="submit" name="action[submit]" value="{{ lang('SUBMIT') }}"/>
 	</fieldset>
 		{% else %}
 			{{ S_FORM_TOKEN }}
@@ -148,7 +148,7 @@
 					</tr>
 					{% endif %}
 					<tr>
-						<td style="text-align: center;"><img src="{{ row.BADGE_ICON_URL }}" alt="{{ row.BADGE_ICON_NAME }}" title="{{ row.BADGE_ICON_NAME }}"/></td>
+						<td style="text-align: center;"><img src="{{ row.BADGE_ICON_URL }}" alt="{{ row.BADGE_LABEL }}" title="{{ row.BADGE_LABEL }}"/></td>
 						<td style="text-align: center;">{{ row.BADGE_LABEL }}</td>
 						<td class="actions" style="text-align: right;">
 							<span class="up-disabled" style="display:none;">{{ ICON_MOVE_UP_DISABLED }}</span>
