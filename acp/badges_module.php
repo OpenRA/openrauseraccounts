@@ -673,11 +673,27 @@ class badges_module
 					}
 					$avails = (int) $this->db->sql_fetchfield('availcount');
 					$this->db->sql_freeresult($result);
-					// Set the appropriate warning for the confirm box.
-					($associated && !$avails) ? $message = 'ACP_ASSOC_UBADGE_CONFIRM' : $message = 'CONFIRM_OPERATION';
-					(!$associated && $avails) ? $message = 'ACP_AVAILS_CONFIRM' : $message = 'CONFIRM_OPERATION';
-					($associated && $avails) ? $message = 'ACP_ASSOC_UBADGE_AVAILS_CONFIRM' : $message = 'CONFIRM_OPERATION';
 
+					// Set the appropriate warning for the confirm box.
+					if ($associated && !$avails)
+					{
+						$message = 'ACP_ASSOC_UBADGE_CONFIRM';
+					}
+
+					elseif (!$associated && $avails)
+					{
+						$message = 'ACP_AVAILS_CONFIRM';
+					}
+
+					elseif ($associated && $avails)
+					{
+						$message = 'ACP_ASSOC_UBADGE_AVAILS_CONFIRM';
+					}
+
+					else
+					{
+						$message = 'CONFIRM_OPERATION';
+					}
 
 					if (!confirm_box(true))
 					{
