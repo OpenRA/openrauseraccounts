@@ -145,7 +145,7 @@ class core
 	}
 
 	/**
-	 * Validates the bade order and fixes it if necessary.
+	 * Validates the badge order and fixes it if necessary.
 	 * Returns true on success.
 	 *
 	 * @return bool
@@ -180,5 +180,22 @@ class core
 		$this->db->sql_freeresult($result);
 
 		return true;
+	}
+
+	/**
+	 * Returns the badge_label for a given badge_id.
+	 *
+	 * @param var $badge_id
+	 * @return string
+	 */
+	public function get_badge_label_by_id($badge_id)
+	{
+		$sql = 'SELECT badge_label AS label
+			FROM ' . $this->table_prefix . 'openra_badges' . '
+			WHERE badge_id = ' . (int)$badge_id;
+		$this->db->sql_query($sql);
+		$badge_label = $this->db->sql_fetchfield('label');
+
+		return $badge_label;
 	}
 }
