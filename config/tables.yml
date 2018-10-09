@@ -1,0 +1,6 @@
+parameters:
+  tables.openra.k: '%core.table_prefix%openra_keys'
+  tables.openra.b: '%core.table_prefix%openra_badges'
+  tables.openra.bt: '%core.table_prefix%openra_badge_types'
+  tables.openra.bu: '%core.table_prefix%openra_user_badges'
+  tables.openra.ba: '%core.table_prefix%openra_badge_availability'

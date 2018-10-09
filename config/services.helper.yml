@@ -1,0 +1,7 @@
+services:
+  openra.openrauseraccounts.helper:
+    class: openra\openrauseraccounts\services\helper\helper
+    arguments:
+      - '@dbal.conn'
+      - '@path_helper'
+      - '@ext.manager'

@@ -1,11 +1,18 @@
+imports:
+  - { resource: tables.yml }
+  - { resource: services.key.yml }
+  - { resource: services.badge.yml }
+  - { resource: services.helper.yml }
+
 services:
-    openra.openrauseraccounts.controller:
-        class: openra\openrauseraccounts\controller\main
-        arguments:
-            - '@openra.openrauseraccounts.core'
-            - '@dbal.conn'
-            - '@config'
-    openra.openrauseraccounts.core:
-        class: openra\openrauseraccounts\core\core
-        arguments:
-            - '@dbal.conn'
+  openra.openrauseraccounts.controller:
+    class: openra\openrauseraccounts\controller\main
+    arguments:
+      - '@openra.openrauseraccounts.core'
+      - '@dbal.conn'
+      - '@config'
+
+  openra.openrauseraccounts.core:
+    class: openra\openrauseraccounts\core\core
+    arguments:
+      - '@dbal.conn'

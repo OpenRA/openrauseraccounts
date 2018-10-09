@@ -1,0 +1,50 @@
+services:
+  openra.openrauseraccounts.badge_manager:
+    class: openra\openrauseraccounts\services\badge\manager
+    arguments:
+      - '@service_container'
+      - '@openra.openrauseraccounts.badge.collection'
+
+  openra.openrauseraccounts.badge.collection:
+    class: phpbb\di\service_collection
+    arguments:
+        - '@service_container'
+    tags:
+        - { name: service_collection, tag: badge }
+
+  openra.openrauseraccounts.badge.base:
+    abstract: true
+    arguments:
+      - '@dbal.conn'
+      - '@user'
+      - '@language'
+      - '@log'
+      - '@service_container'
+      - '%tables.openra.b%'
+      - '%tables.openra.ba%'
+      - '%tables.openra.bu%'
+      - '%tables.openra.bt%'
+
+  openra.openrauseraccounts.badge:
+    class: openra\openrauseraccounts\services\badge\badge
+    parent: openra.openrauseraccounts.badge.base
+    tags:
+      - { name: badge }
+
+  openra.openrauseraccounts.badge_availability:
+    class: openra\openrauseraccounts\services\badge\badge_availability
+    parent: openra.openrauseraccounts.badge.base
+    tags:
+      - { name: badge }
+
+  openra.openrauseraccounts.badge_user:
+    class: openra\openrauseraccounts\services\badge\badge_user
+    parent: openra.openrauseraccounts.badge.base
+    tags:
+      - { name: badge }
+
+  openra.openrauseraccounts.badge_type:
+    class: openra\openrauseraccounts\services\badge\badge_type
+    parent: openra.openrauseraccounts.badge.base
+    tags:
+      - { name: badge }
