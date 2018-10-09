@@ -1,45 +1,41 @@
 {% include('overall_header.html') %}
 {% INCLUDECSS '@openra_openrauseraccounts/acp_badges.css' %}
 <a id="maincontent"></a>
-{% if S_EDIT or S_USERS %}<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo;{{ lang('BACK') }}</a>{% endif %}
-<h1>{{ lang('ACP_MODE_TITLE') }}</h2>
-<p>{{ lang('ACP_MODE_EXPLAIN') }}</p>
-{% set formid = lang('ACP_MODE_TITLE')|replace({' ': ''})|lower %}
+{% if (S_EDIT or S_ADD or S_USERS) %}<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo;{{ lang('BACK') }}</a>{% endif %}
+<h1>{{ lang('MODE_TITLE') }}</h2>
+<p>{{ lang('MODE_EXPLAIN') }}</p>
+{% set formid = lang('MODE_TITLE')|replace({' ': ''})|lower %}
 <form id="{{ formid }}" method="post" action="{{ U_ACTION }}">
-{% if S_ACP_MODE_SETTINGS %}
+{% if S_MODE_SETTINGS %}
     <fieldset>
 		<dl>
-			<dt><label for="maxbadges">{{ lang('ACP_SET_MAX_BADGES') }}{{ lang('COLON') }}</label><br/><span>{{ lang('ACP_SET_MAX_BADGES_EXPLAIN') }}</span></dt>
-			<dd><input name="maxbadges" type="number" id="maxbadges" value="{{ SET_MAX_BADGES }}" min="0" max="10"/></dd>
+			<dt><label for="maxbadges">{{ lang('SET_MAX_BADGES') }}{{ lang('COLON') }}</label><br/><span>{{ lang('SET_MAX_BADGES_EXPLAIN') }}</span></dt>
+			<dd><input name="maxbadges" type="number" value="{{ SET_MAX_BADGES }}" min="0" max="10"/></dd>
 		</dl>
 		<p class="submit-buttons">
-			<input type="hidden" name="action" value="save_settings"/>
-			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}"/>
-			{{ S_FORM_TOKEN }}
+			<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}"/>
 		</p>
 	</fieldset>
 {% endif %}
-{% if S_ACP_MODE_TYPES and S_EDIT %}
+{% if S_MODE_TYPES and (S_EDIT or S_ADD) %}
 	<fieldset>
 		<dl>
-			<dt><label for="typename">{{ lang('ACP_TYPE_NAME') }}{{ lang('COLON') }}</label></dt>
-			<dd><input name="typename" type="text" id="typename" value="{{ TYPE_NAME }}" maxlength="255"/></dd>
+			<dt><label for="typename">{{ lang('TYPE_NAME') }}{{ lang('COLON') }}</label></dt>
+			<dd><input name="typename" type="text" value="{{ TYPE_NAME }}" maxlength="255"/></dd>
 		</dl>
 		<p class="submit-buttons">
-			<input type="hidden" name="action" value="save_type"/>
-			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}"/>
-			{% if S_ADD %}&nbsp;<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}"/>{% endif %}
-			{{ S_FORM_TOKEN }}
+			<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}"/>
+			{% if S_ADD %}&nbsp;<input class="button2" type="reset" name="reset" value="{{ lang('RESET') }}"/>{% endif %}
 		</p>
 	</fieldset>
 {% endif %}
-{% if S_ACP_MODE_TYPES and not S_EDIT %}
+{% if S_MODE_TYPES and not (S_EDIT or S_ADD) %}
 	<fieldset class="tabulated">
 		<table class="table1 zebra-table">
 			<thead>
 				<tr>
-					<th style="text-align: center;">{{ lang('ACP_TYPE_NAME') }}</th>
-					<th style="text-align: center;">{{ lang('ACP_TYPE_USED_BY') }}</th>
+					<th style="text-align: center;">{{ lang('TYPE_NAME') }}</th>
+					<th style="text-align: center;">{{ lang('TYPE_USED_BY') }}</th>
 					<th style="text-align: center;">{{ lang('ACTION') }}</th>
 				</tr>
 			</thead>
@@ -54,18 +50,17 @@
 		{% endfor %}
 	{% else %}
 			<tr>
-				<td colspan="3" style="text-align: center;"><span class="gen">{{ lang('ACP_NO_TYPES') }}</span></td>
+				<td colspan="3" style="text-align: center;"><span class="gen">{{ lang('NO_TYPES') }}</span></td>
 			</tr>
 	{% endif %}
 			</tbody>
 		</table>
 		<p class="quick">
-			<input class="button2" name="add" type="submit" value="{{ lang('ACP_ADD_TYPE') }}"/>
-			{{ S_FORM_TOKEN }}
+            <a class="button2" href="{{ U_ADD }}">{{ lang('ADD_TYPE') }}</a>
 		</p>
 	</fieldset>
 {% endif %}
-{% if S_ACP_MODE_BADGES and S_EDIT %}
+{% if S_MODE_MANAGE and (S_EDIT or S_ADD) %}
     {% block javascripts %}
     <script type="text/javascript">
     // <![CDATA[
@@ -78,36 +73,34 @@
     {% endblock %}
 	<fieldset>
 		<dl>
-			<dt><label for="label">{{ lang('ACP_BADGE_LABEL') }}{{ lang('COLON') }}</label></dt>
+			<dt><label for="label">{{ lang('BADGE_LABEL') }}{{ lang('COLON') }}</label></dt>
 			<dd><input name="label" type="text" id="label" value="{{ BADGE_LABEL }}" maxlength="255" /></dd>
 		</dl>
 		<dl>
-			<dt><label for="icon24">{{ lang('ACP_BADGE_ICON') }}{{ lang('COLON') }}</label><br/><span>{{ lang('ACP_INPUT_URL_EXPLAIN') }}</span></dt>
+			<dt><label for="icon24">{{ lang('BADGE_ICON') }}{{ lang('COLON') }}</label><br/><span>{{ lang('INPUT_URL_EXPLAIN') }}</span></dt>
 			<dd><input name="icon24" type="url" id="icon24" class="inputbox" onchange="update_image(this.value);" value="{{ BADGE_ICON_URL }}" maxlength="255" size="80"></dd>
             <dd><img style="margin-top: 5px;" src="{{ BADGE_ICON_URL }}" id="icon" alt="" /></dd>
         </dl>
 		<dl>
-			<dt><label for="typeid">{{ lang('ACP_BADGE_TYPE') }}{{ lang('COLON') }}</label></dt>
+			<dt><label for="typeid">{{ lang('SELECT_BADGE_TYPE') }}{{ lang('COLON') }}</label></dt>
 			<dd><select name="typeid" id="typeid">{{ S_TYPE_LIST }}</select></dd>
 		</dl>
 		<dl>
-			<dt><label for="default">{{ lang('ACP_BADGE_SET_DEFAULT') }}{{ lang('COLON') }}</label></dt>
+			<dt><label for="default">{{ lang('BADGE_SET_DEFAULT') }}{{ lang('COLON') }}</label></dt>
 			<dd><label><input type="radio" class="radio" name="default" value="1" id="default"{% if S_DEFAULT %} checked="checked"{% endif %}{% if not S_ADD %}disabled{% endif %}/>{{ lang('YES') }}</label>
 				<label><input type="radio" class="radio" name="default" value="0"{% if not S_DEFAULT %} checked="checked"{% endif %}{% if not S_ADD %}disabled{% endif %}/>{{ lang('NO') }}</label></dd>
 		</dl>
 		<p class="submit-buttons">
-			<input type="hidden" name="action" value="save_badge"/>
-			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}"/>
-			{% if S_ADD %}&nbsp;<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}"/>{% endif %}
-			{{ S_FORM_TOKEN }}
+			<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}"/>
+			{% if S_ADD %}&nbsp;<input class="button2" type="reset" name="reset" value="{{ lang('RESET') }}"/>{% endif %}
 		</p>
 	</fieldset>
 {% endif %}
-{% if S_ACP_MODE_BADGES and S_USERS %}
+{% if S_MODE_MANAGE and S_USERS %}
     <table class="table1 zebra-table">
         <thead>
             <tr>
-                <th>{{ lang('ACP_USERNAME') }}</th>
+                <th>{{ lang('USERNAME') }}</th>
                 <th>{{ lang('MARK') }}</th>
             </tr>
         </thead>
@@ -116,19 +109,19 @@
         {% for row in availrow %}
             <tr>
                 <td>{{ row.USER_NAME }}</td>
-                <td style="width: 5%" align="center"><input type="checkbox" name="markedusers[]" value="{{ row.ID }}"/></td>
+                <td style="width: 5%" align="center"><input type="checkbox" name="mark[]" value="{{ row.ID }}"/></td>
             </tr>
          {% endfor %}
     {% else %}
             <tr>
-                <td colspan="2" style="text-align: center;"><span class="gen">{{ lang('ACP_NO_AVAILS') }}</span></td>
+                <td colspan="2" style="text-align: center;"><span class="gen">{{ lang('NO_AVAILS') }}</span></td>
             </tr>
     {% endif %}
         </tbody>
     </table>
     <fieldset class="quick">
-		<input class="button2" type="submit" name="rem_all" value="{{ lang('ACP_REMOVE_ALL') }}" />&nbsp;
-		<input class="button2" type="submit" name="rem_marked" value="{{ lang('ACP_REMOVE_MARKED') }}" /><br />
+		<input class="button2" type="submit" name="delall" value="{{ lang('REMOVE_ALL') }}" />&nbsp;
+		<input class="button2" type="submit" name="delmark" value="{{ lang('REMOVE_MARKED') }}" /><br />
 		<p class="small"><a href="#" onclick="marklist('{{ formid }}', 'mark', true); return false;">{{ lang('MARK_ALL') }}</a> &bull; <a href="#" onclick="marklist('{{ formid }}', 'mark', false); return false;">{{ lang('UNMARK_ALL') }}</a></p>
     </fieldset>
     <fieldset>
@@ -137,20 +130,20 @@
             <dd><textarea id="usernames" name="usernames" cols="40" rows="5"></textarea></dd>
             <dd>[ <a href="{{ U_FIND_USERNAME }}" onclick="find_username(this.href); return false;">{{ lang('FIND_USERNAME') }}</a> ]</dd>
         </dl>
-        <p class="quick">
-            <input class="button2" type="submit" name="addusers" value="{{ lang('SUBMIT') }}" />
-        </p>
-        {S_FORM_TOKEN}
+		<p class="submit-buttons">
+			<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}"/>
+			&nbsp;<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}"/>
+		</p>
 	</fieldset>
 {% endif %}
-{% if S_ACP_MODE_BADGES and not S_EDIT and not S_USERS  %}
+{% if S_MODE_MANAGE and not (S_EDIT or S_ADD or S_USERS) %}
 	<fieldset class="tabulated">
 		<table class="table1 zebra-table">
 			<thead>
 				<tr>
-					<th style="text-align: center;">{{ lang('ACP_BADGE_ICON') }}</th>
-					<th style="text-align: center;">{{ lang('ACP_BADGE_LABEL') }}</th>
-					<th style="text-align: center;">{{ lang('ACP_BADGE_USED_BY') }}</th>
+					<th style="text-align: center;">{{ lang('BADGE_ICON') }}</th>
+					<th style="text-align: center;">{{ lang('BADGE_LABEL') }}</th>
+					<th style="text-align: center;">{{ lang('BADGE_USED_BY') }}</th>
 					<th style="text-align: center;">{{ lang('ACTION') }}</th>
 				</tr>
 			</thead>
@@ -171,16 +164,16 @@
 		{% endfor %}
 	{% else %}
 				<tr>
-					<td colspan="3" style="text-align: center;"><span class="gen">{{ lang('ACP_NO_BADGES') }}</span></td>
+					<td colspan="3" style="text-align: center;"><span class="gen">{{ lang('NO_BADGES') }}</span></td>
 				</tr>
 	{% endif %}
 			</tbody>
 		</table>
-		<p class="quick">
-			<input class="button2" name="add" type="submit" value="{{ lang('ACP_ADD_BADGE') }}"/>
-			{{ S_FORM_TOKEN }}
-		</p>
+        <p class="quick">
+            <a class="button2" href="{{ U_ADD }}">{{ lang('ADD_BADGE') }}</a>
+        </p>
 	</fieldset>
 {% endif %}
+{{ S_FORM_TOKEN }}
 </form>
 {% include('overall_footer.html') %}

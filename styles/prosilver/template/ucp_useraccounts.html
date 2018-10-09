@@ -1,15 +1,15 @@
 {% include('ucp_header.html') %}
 {% INCLUDECSS '@openra_openrauseraccounts/ucp_useraccounts.css' %}
-<h2>{{ lang('UCP_MODE_TITLE') }}</h2>
-{% set formid = lang('UCP_MODE_TITLE')|replace({' ': ''})|lower %}
+<h2>{{ lang('MODE_TITLE') }}</h2>
+{% set formid = lang('MODE_TITLE')|replace({' ': ''})|lower %}
 <form id="{{ formid }}" method="post" action="{{ U_POST_ACTION }}">
 	<div class="panel">
 		<div class="inner">
-			<p>{{ lang('UCP_MODE_EXPLAIN') }}</p>
-	{% if S_UCP_MODE_ADD_KEY %}
+			<p>{{ lang('MODE_EXPLAIN') }}</p>
+	{% if S_MODE_ADD_KEY %}
 			<fieldset class=fields2>
 				<dl>
-					<dt><label for="pubkey">{{ lang('UCP_INPUT_KEY') }}{{ lang('COLON') }}</label><br/><span>{{ lang('UCP_INPUT_KEY_EXPLAIN') }}</span></dt>
+					<dt><label for="pubkey">{{ lang('INPUT_KEY') }}{{ lang('COLON') }}</label><br/><span>{{ lang('INPUT_KEY_EXPLAIN') }}</span></dt>
 					<dd><textarea name="pubkey" id="pubkey" rows="9" class="inputbox"></textarea></dd>
 				</dl>
 			</fieldset>
@@ -18,11 +18,10 @@
 	<fieldset class="submit-buttons">
 	{{ S_HIDDEN_FIELDS }}
 		<input type="reset" value="{{ lang('RESET') }}" name="reset" class="button2"/>
-		&nbsp;<input type="submit" name="action[submit]" value="{{ lang('SUBMIT') }}" class="button1"/>
-	{{ S_FORM_TOKEN }}
+		&nbsp;<input type="submit" name="submit" value="{{ lang('SUBMIT') }}" class="button1"/>
 	</fieldset>
 	{% endif %}
-	{% if S_UCP_MODE_MANAGE_KEYS %}
+	{% if S_MODE_MANAGE_KEYS %}
 			<div class="action-bar bar-top">
 				<div class="pagination">
 					{{ TOTAL }}
@@ -36,9 +35,9 @@
 			<table class="table1">
 				<thead>
 				<tr>
-					<th class="name">{{ lang('UCP_FINGERPRINT') }}</th>
-					<th class="center">{{ lang('UCP_REGISTERED') }}</th>
-					<th class="center">{{ lang('UCP_LAST_ACCESS') }}</th>
+					<th class="name">{{ lang('FINGERPRINT') }}</th>
+					<th class="center">{{ lang('REGISTERED') }}</th>
+					<th class="center">{{ lang('LAST_ACCESS') }}</th>
 					<th>{{ lang('MARK') }}</th>
 				</tr>
 				</thead>
@@ -49,12 +48,12 @@
 						<td>{{ row.FINGERPRINT }}</td>
 						<td class="center">{{ row.REGISTERED }}</td>
 						<td class="center">{{ row.LAST_ACCESSED }}</td>
-						<td style="width: 5%" align="center"><input type="checkbox" name="markedkeys[]" value="{{ row.ID }}"/></td>
+						<td style="width: 5%" align="center"><input type="checkbox" name="mark[]" value="{{ row.ID }}"/></td>
 					</tr>
 				{% endfor %}
 		{% else %}
 					<tr>
-						<td class="bg1" colspan="4" align="center"><span class="gen">{{ lang('UCP_NO_KEYS') }}</span></td>
+						<td class="bg1" colspan="4" align="center"><span class="gen">{{ lang('NO_KEYS') }}</span></td>
 					</tr>
 		{% endif %}
 				</tbody>
@@ -70,28 +69,26 @@
 			{% endif %}
 				</div>
 			</div>
-			{{ S_FORM_TOKEN }}
 		</div>
 	</div>
 	<fieldset class="display-actions">
-		<input class="button2" type="submit" name="action[rev_all]" value="{{ lang('UCP_REVOKE_ALL') }}"/>
-		&nbsp;<input class="button1" type="submit" name="action[rev_marked]" value="{{ lang('UCP_REVOKE_MARKED') }}"/>
+		<input class="button2" type="submit" name="revall" value="{{ lang('REVOKE_ALL') }}"/>
+		&nbsp;<input class="button1" type="submit" name="revmark" value="{{ lang('REVOKE_MARKED') }}"/>
 		<div><a href="#" onclick="marklist('{{ formid }}', 'mark', true); return false;">{{ lang('MARK_ALL') }}</a> :: <a href="#" onclick="marklist('{{ formid }}', 'mark', false); return false;">{{ lang('UNMARK_ALL') }}</a></div>
 	</fieldset>
 		{% else %}
-			{{ S_FORM_TOKEN }}
 		</div>
 	</div>
 		{% endif %}
 	{% endif %}
-	{% if S_UCP_MODE_SELECT_BADGES %}
-			<h3 style="margin: 20px 0 0;">{{ lang('UCP_SELECT_BADGES_TABLE_DESC') }}</h3>
+	{% if S_MODE_SELECT_BADGES %}
+			<h3 style="margin: 20px 0 0;">{{ lang('SELECT_BADGES_TABLE_DESC') }}</h3>
 			<table class="table1">
 				<thead>
 				<tr>
-					<th class="center">{{ lang('UCP_BADGE_ICON') }}</th>
-					<th class="center">{{ lang('UCP_BADGE_LABEL') }}</th>
-					<th>{{ lang('UCP_SELECTION') }}</th>
+					<th class="center">{{ lang('BADGE_ICON') }}</th>
+					<th class="center">{{ lang('BADGE_LABEL') }}</th>
+					<th>{{ lang('SELECTION') }}</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -105,37 +102,35 @@
 					<tr>
 						<td style="text-align: center;"><img src="{{ row.BADGE_ICON_URL }}" alt="{{ row.BADGE_LABEL }}" title="{{ row.BADGE_LABEL }}"/></td>
 						<td style="text-align: center;">{{ row.BADGE_LABEL }}</td>
-						<td style="width: 5%" align="center"><input type="checkbox" name="markedbadges[]" value="{{ row.ID }}" {% if row.S_SELECTED %}checked="checked"{% endif %}/></td>
+						<td style="width: 5%" align="center"><input type="checkbox" name="mark[]" value="{{ row.ID }}" {% if row.S_SELECTED %}checked="checked"{% endif %}/></td>
 					</tr>
 			{% endfor %}
 		{% else %}
 					<tr>
-						<td class="bg1" colspan="3" align="center"><span class="gen">{{ lang('UCP_NO_BADGES_AVAILABLE') }}</span></td>
+						<td class="bg1" colspan="3" align="center"><span class="gen">{{ lang('NO_BADGES_AVAILABLE') }}</span></td>
 					</tr>
 		{% endif %}
 				</tbody>
 			</table>
 		{% if s_badgerow %}
-		{{ S_FORM_TOKEN }}
 		</div>
 	</div>
 	<fieldset class="display-actions">
-		<input class="button1" type="submit" name="action[submit]" value="{{ lang('SUBMIT') }}"/>
+		<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}"/>
 	</fieldset>
 		{% else %}
-			{{ S_FORM_TOKEN }}
 		</div>
 	</div>
 		{% endif %}
 	{% endif %}
-	{% if S_UCP_MODE_ORDER_BADGES %}
+	{% if S_MODE_ORDER_BADGES %}
 		{% INCLUDEJS '@openra_openrauseraccounts/ucp_useraccounts.js' %}
-			<h3 style="margin: 20px 0 0;">{{ lang('UCP_ORDER_BADGES_TABLE_DESC') }}</h3>
+			<h3 style="margin: 20px 0 0;">{{ lang('ORDER_BADGES_TABLE_DESC') }}</h3>
 			<table class="table1">
 				<thead>
 				<tr>
-					<th class="center">{{ lang('UCP_BADGE_ICON') }}</th>
-					<th class="center">{{ lang('UCP_BADGE_LABEL') }}</th>
+					<th class="center">{{ lang('BADGE_ICON') }}</th>
+					<th class="center">{{ lang('BADGE_LABEL') }}</th>
 					<th style="text-align: right;">{{ lang('OPTIONS') }}</th>
 				</tr>
 				</thead>
@@ -144,7 +139,7 @@
 				{% for row in u_badgerow %}
 					{% if row.S_SPACER %}
 					<tr id="spacer">
-						<td colspan="3" style="text-align: center;">{{ lang('UCP_BADGES_NOT_DISPLAYED') }}</td>
+						<td colspan="3" style="text-align: center;">{{ lang('BADGES_NOT_DISPLAYED') }}</td>
 					</tr>
 					{% endif %}
 					<tr>
@@ -160,13 +155,14 @@
 				{% endfor %}
 		{% else %}
 					<tr>
-						<td class="bg1" colspan="3" align="center"><span class="gen">{{ lang('UCP_NO_PROFILE_BADGES') }}</span></td>
+						<td class="bg1" colspan="3" align="center"><span class="gen">{{ lang('NO_PROFILE_BADGES') }}</span></td>
 					</tr>
 		{% endif %}
 				</tbody>
 			</table>
 		</div>
 	</div>
-	{% endif %}
+    {% endif %}
+{{ S_FORM_TOKEN }}
 </form>
 {% include('ucp_footer.html') %}
