@@ -19,22 +19,22 @@ class badges_info
 	{
 		return array(
 			'filename' => '\openra\openrauseraccounts\acp\badges_module',
-			'title' => 'ACP_TITLE',
+			'title' => 'ACP_BADGES',
 			'modes' => array(
 				'settings' => array(
-					'title'	=> 'ACP_SETTINGS',
+					'title'	=> 'ACP_BADGES_SETTINGS',
 					'auth'	=> 'ext_openra/openrauseraccounts && acl_a_board',
-					'cat'	=> array('ACP_TITLE')
+					'cat'	=> array('ACP_BADGES')
 				),
 				'types' => array(
-					'title'	=> 'ACP_TYPES',
+					'title'	=> 'ACP_BADGES_TYPES',
 					'auth'	=> 'ext_openra/openrauseraccounts && acl_a_board',
-					'cat'	=> array('ACP_TITLE')
+					'cat'	=> array('ACP_BADGES')
 				),
-				'badges' => array(
-					'title'	=> 'ACP_BADGES',
+				'manage' => array(
+					'title'	=> 'ACP_BADGES_MANAGE',
 					'auth'	=> 'ext_openra/openrauseraccounts && acl_a_board',
-					'cat'	=> array('ACP_TITLE')
+					'cat'	=> array('ACP_BADGES')
 				)
 			)
 		);

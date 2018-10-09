@@ -19,27 +19,27 @@ class useraccounts_info
 	{
 		return array(
 			'filename' => '\openra\openrauseraccounts\ucp\useraccounts_module',
-			'title' => 'UCP_TITLE',
+			'title' => 'UCP_ACCOUNTS',
 			'modes' => array(
 				'add_key' => array(
-					'title'	=> 'UCP_ADD_KEY',
-					'auth'	=> 'ext_openra/openrauseraccounts',
-					'cat'	=> 'UCP_TITLE'
+					'title' => 'UCP_ACCOUNTS_ADD_KEY',
+					'auth' => 'ext_openra/openrauseraccounts',
+					'cat' => 'UCP_ACCOUNTS'
 				),
 				'manage_keys' => array(
-					'title'	=> 'UCP_MANAGE_KEYS',
-					'auth'	=> 'ext_openra/openrauseraccounts',
-					'cat'	=> 'UCP_TITLE'
+					'title' => 'UCP_ACCOUNTS_MANAGE_KEYS',
+					'auth' => 'ext_openra/openrauseraccounts',
+					'cat' => 'UCP_ACCOUNTS'
 				),
 				'select_badges' => array (
-					'title'	=> 'UCP_SELECT_BADGES',
-					'auth'	=> 'ext_openra/openrauseraccounts',
-                    			'cat'	=> 'UCP_TITLE'
+					'title' => 'UCP_ACCOUNTS_SELECT_BADGES',
+					'auth' => 'ext_openra/openrauseraccounts',
+                    'cat' => 'UCP_ACCOUNTS'
 				),
-                		'order_badges' => array(
-					'title'	=> 'UCP_ORDER_BADGES',
-					'auth'	=> 'ext_openra/openrauseraccounts',
-                   			 'cat'	=> 'UCP_TITLE'
+                'order_badges' => array(
+					'title' => 'UCP_ACCOUNTS_ORDER_BADGES',
+					'auth' => 'ext_openra/openrauseraccounts',
+                   	'cat' => 'UCP_ACCOUNTS'
 				)
 			)
 		);
