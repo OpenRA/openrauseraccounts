@@ -131,7 +131,6 @@ class key
 		}
 
 		$fp = sha1($pkey_d['rsa']['n'] . $pkey_d['rsa']['e']);
-        $pk = $pkey_d['key'];
 
         $this->db->sql_query(
             'SELECT  revoked AS duplicate
@@ -154,7 +153,7 @@ class key
 		}
 		elseif ($duplicate === false)
 		{
-			$data = ['user_id' => $user_id, 'public_key' => $pk, 'fingerprint' => $fp, 'registered' => time()];
+			$data = ['user_id' => $user_id, 'public_key' => $key, 'fingerprint' => $fp, 'registered' => time()];
 			$this->db->sql_query('INSERT INTO ' . $this->k_tbl . $this->db->sql_build_array('INSERT', $data));
 
 			return 'KEY_SAVED';
