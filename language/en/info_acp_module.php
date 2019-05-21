@@ -19,13 +19,13 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	'ACP_TITLE'					=> 'OpenRA badges',
-	'ACP_SETTINGS'					=> 'Settings',
-	'ACP_SETTINGS_EXPLAIN'				=> 'General settings for badges',
-	'ACP_TYPES'					=> 'Manage badge types',
-	'ACP_TYPES_EXPLAIN'				=> 'Using this form you can add, edit, view and delete badge types.',
-	'ACP_BADGES'					=> 'Manage badges',
-	'ACP_BADGES_EXPLAIN'				=> 'Using this form you can add, edit, view and delete badges. Users can only be added to badges that are not defined as default.',
+	'ACP_BADGES'					=> 'OpenRA badges',
+	'ACP_BADGES_SETTINGS'				=> 'Settings',
+	'ACP_BADGES_SETTINGS_EXPLAIN'			=> 'General settings for badges',
+	'ACP_BADGES_TYPES'				=> 'Manage badge types',
+	'ACP_BADGES_TYPES_EXPLAIN'			=> 'Using this form you can add, edit, and delete badge types.',
+	'ACP_BADGES_BADGES'				=> 'Manage badges',
+	'ACP_BADGES_BADGES_EXPLAIN'			=> 'Using this form you can add, edit, and delete badges.',
 	'ACP_NO_BADGE_LABEL'				=> 'You have to set a badge title.',
 	'ACP_NO_BADGE_ICON'				=> 'You have to set a badge icon.',
 	'ACP_NO_BADGE_TYPE'				=> 'You have to select a badge type.',

@@ -58,8 +58,8 @@ class badges_module
 
 		// Assign general template vars.
 		$this->template->assign_vars(array(
-			'L_ACP_MODE_TITLE' => $this->user->lang('ACP_' . strtoupper($mode)),
-			'L_ACP_MODE_EXPLAIN' => $this->user->lang('ACP_' . strtoupper($mode) . '_EXPLAIN'),
+			'L_ACP_MODE_TITLE' => $this->user->lang('ACP_BADGES_' . strtoupper($mode)),
+			'L_ACP_MODE_EXPLAIN' => $this->user->lang('ACP_BADGES_' . strtoupper($mode) . '_EXPLAIN'),
 			'U_ACTION' => $this->u_action
 		));
 
@@ -68,7 +68,7 @@ class badges_module
 		$phpEx = $this->path_helper->get_php_ext();
 		$formid = strtolower(str_replace(' ', '', $this->user->lang('ACP_' . strtoupper($mode))));
 		$this->tpl_name = 'acp_badges';
-		$this->page_title = 'ACP_TITLE';
+		$this->page_title = 'ACP_BADGES';
 		$form_key = 'openra/openrauseraccounts';
 		add_form_key($form_key);
 
