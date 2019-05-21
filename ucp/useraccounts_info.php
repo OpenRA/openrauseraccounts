@@ -19,27 +19,27 @@ class useraccounts_info
 	{
 		return array(
 			'filename' => '\openra\openrauseraccounts\ucp\useraccounts_module',
-			'title' => 'UCP_TITLE',
+			'title' => 'UCP_ACCOUNT',
 			'modes' => array(
 				'add_key' => array(
-					'title'	=> 'UCP_ADD_KEY',
+					'title'	=> 'UCP_ACCOUNT_ADD_KEY',
 					'auth'	=> 'ext_openra/openrauseraccounts',
-					'cat'	=> 'UCP_TITLE'
+					'cat'	=> 'UCP_ACCOUNT'
 				),
 				'manage_keys' => array(
-					'title'	=> 'UCP_MANAGE_KEYS',
+					'title'	=> 'UCP_ACCOUNT_MANAGE_KEYS',
 					'auth'	=> 'ext_openra/openrauseraccounts',
-					'cat'	=> 'UCP_TITLE'
+					'cat'	=> 'UCP_ACCOUNT'
 				),
 				'select_badges' => array (
-					'title'	=> 'UCP_SELECT_BADGES',
+					'title'	=> 'UCP_ACCOUNT_SELECT_BADGES',
 					'auth'	=> 'ext_openra/openrauseraccounts',
-                    			'cat'	=> 'UCP_TITLE'
+                    'cat'	=> 'UCP_ACCOUNT'
 				),
-                		'order_badges' => array(
-					'title'	=> 'UCP_ORDER_BADGES',
+                'order_badges' => array(
+					'title'	=> 'UCP_ACCOUNT_ORDER_BADGES',
 					'auth'	=> 'ext_openra/openrauseraccounts',
-                   			 'cat'	=> 'UCP_TITLE'
+                   	'cat'	=> 'UCP_ACCOUNT'
 				)
 			)
 		);

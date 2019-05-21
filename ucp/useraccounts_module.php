@@ -62,14 +62,14 @@ class useraccounts_module
 
 		// Assign general template vars.
 		$this->template->assign_vars(array(
-			'L_UCP_MODE_TITLE' => $this->user->lang('UCP_' . strtoupper($mode)),
-			'L_UCP_MODE_EXPLAIN' => $this->user->lang('UCP_' . strtoupper($mode) . '_EXPLAIN'),
+			'L_UCP_MODE_TITLE' => $this->user->lang('UCP_ACCOUNT_' . strtoupper($mode)),
+			'L_UCP_MODE_EXPLAIN' => $this->user->lang('UCP_ACCOUNT_' . strtoupper($mode) . '_EXPLAIN'),
 			'U_POST_ACTION' => $this->u_action
 		));
 
 		// General references.
 		$this->tpl_name = 'ucp_useraccounts';
-		$this->page_title = $this->user->lang('UCP_TITLE');
+		$this->page_title = $this->user->lang('UCP_ACCOUNT');
 		$form_key = 'openra/openrauseraccounts';
 		add_form_key($form_key);
 
