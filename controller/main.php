@@ -91,6 +91,14 @@ class main
 				$yaml .=  "\tProfileID: " . $data['user_id'] . "\n";
 				$yaml .=  "\tProfileName: " . $data['username'] . "\n";
 				$yaml .=  "\tProfileRank: Registered User\n";
+				$yaml .=  "\tAvatar:\n";
+				if ($avatar_src = $this->core->get_avatar_src($data))
+				{
+					$yaml .=  "\t\tSrc: {$avatar_src}\n";
+					$yaml .=  "\t\tWidth: {$data['user_avatar_width']}\n";
+					$yaml .=  "\t\tHeight: {$data['user_avatar_height']}\n";
+					$yaml .=  "\t\tType: {$data['user_avatar_type']}\n";
+				}
 				$yaml .=  "\tBadges:\n";
 				if ($badges)
 				{
