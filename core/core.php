@@ -15,18 +15,22 @@ namespace openra\openrauseraccounts\core;
  */
 class core
 {
+	private $config;
 	private $db;
 	private $table_prefix;
 	private $path_helper;
 	private $ext_manager;
+	private $avatar_manager;
 
 	public function __construct()
 	{
 		global $phpbb_container;
+		$this->config = $phpbb_container->get('config');
 		$this->db = $phpbb_container->get('dbal.conn');
 		$this->table_prefix = $phpbb_container->getParameter('core.table_prefix');
 		$this->path_helper = $phpbb_container->get('path_helper');
 		$this->ext_manager = $phpbb_container->get('ext.manager');
+		$this->avatar_manager = $phpbb_container->get('avatar.manager');
 	}
 
 	/**
@@ -39,7 +43,7 @@ class core
 	public function get_info_sql($fingerprint)
 	{
 		$sql_array = array(
-			'SELECT' => 'pubkey.item_id, pubkey.user_id, pubkey.public_key, pubkey.fingerprint, pubkey.revoked, user.username',
+			'SELECT' => 'pubkey.item_id, pubkey.user_id, pubkey.public_key, pubkey.fingerprint, pubkey.revoked, user.username, user.user_avatar, user.user_avatar_type, user.user_avatar_width, user.user_avatar_height',
 
 			'FROM' => array(
 				USERS_TABLE => 'user',
@@ -180,5 +184,105 @@ class core
 		$this->db->sql_freeresult($result);
 
 		return true;
+	}
+
+	/**
+	 * Gets the url to the user avatar.
+	 * Returns false on failure or if there is no avatar.
+	 *
+	 * @param array $user_data Avatar data from the user table
+	 * @return array|boolean
+	 */
+	public function get_avatar_data($user_data)
+	{
+		if (!$this->config['allow_avatar'])
+		{
+			return false;
+		}
+
+		$row = [
+			'avatar' => $user_data['user_avatar'],
+			'avatar_width' => $user_data['user_avatar_width'],
+			'avatar_height' => $user_data['user_avatar_height'],
+		];
+
+		$driver = $this->avatar_manager->get_driver($user_data['user_avatar_type']);
+
+		if (!$driver)
+		{
+			return false;
+		}
+
+		$avatar_data = $driver->get_data($row);
+
+		if ($user_data['user_avatar_type'] === 'avatar.driver.gravatar')
+		{
+			$avatar_data['src'] = $this->get_gravatar_url($row);
+		}
+		else if ($user_data['user_avatar_type'] === 'avatar.driver.upload')
+		{
+			$avatar_data['src'] = $this->get_upload_avatar_url($user_data['user_avatar']);
+		}
+		else if ($user_data['user_avatar_type'] === 'avatar.driver.local')
+		{
+			$avatar_data['src'] = $this->get_local_avatar_url($user_data['user_avatar']);
+		}
+
+		return $avatar_data;
+	}
+
+	/**
+	 * Gets the full URL for a user uploaded avatar.
+	 * 
+	 * @param $user_avatar User avatar data
+	 * @return string Avatar URL
+	 */
+	protected function get_upload_avatar_url($user_avatar)
+	{
+		return generate_board_url() . '/download/file.php' . '?avatar=' . $user_avatar;
+	}
+
+	/**
+	 * Gets the full URL for a gallery avatar.
+	 * 
+	 * @param $user_avatar User avatar data
+	 * @return string Avatar URL
+	 */
+	protected function get_local_avatar_url($user_avatar)
+	{
+		return generate_board_url() . '/' . $this->config['avatar_gallery_path'] . '/' . $user_avatar;
+	}
+
+	/**
+	 * Gets the URL for a gravatar.
+	 * Essentially a copy of the protected method form avatar.driver.gravatar
+	 * 
+	 * @param $row User data
+	 * @return string Gravatar URL
+	 */
+	protected function get_gravatar_url($row)
+	{
+		global $phpbb_dispatcher;
+
+		$url = 'https://secure.gravatar.com/avatar/';
+		$url .=  md5(strtolower(trim($row['avatar'])));
+
+		if ($row['avatar_width'] || $row['avatar_height'])
+		{
+			$url .= '?s=' . max($row['avatar_width'], $row['avatar_height']);
+		}
+
+		/**
+		* Modify gravatar url
+		*
+		* @event core.get_gravatar_url_after
+		* @var	string	row	User data or group data
+		* @var	string	url	Gravatar URL
+		* @since 3.1.7-RC1
+		*/
+		$vars = array('row', 'url');
+		extract($phpbb_dispatcher->trigger_event('core.get_gravatar_url_after', compact($vars)));
+
+		return $url;
 	}
 }
