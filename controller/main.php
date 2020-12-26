@@ -46,44 +46,44 @@ class main
 	 */
 	public function fetchinfo($type, $fingerprint)
 	{
+		// Retrieve profile data
+		$sql = $this->core->get_info_sql($fingerprint);
+		if (!($result = $this->db->sql_query($sql)))
+		{
+			return $this->get_response("Error: Failed to query profile data");
+		}
+		$data = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+		if (!$data)
+		{
+			return $this->get_response("Error: No profile data");
+		}
+
+		// Retrieve badge data
+		$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
+		if (!($result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges'])))
+		{
+			return $this->get_response("Error: Failed to query badge data");
+		}
+		// Store all the badge data in an array to loop over it later
+		$badges = array();
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$badges[] = $row;
+		}
+		$this->db->sql_freeresult($result);
+
+		// Update last accessed time
+		$sql = $this->core->get_update_sql($fingerprint);
+		if (!($result = $this->db->sql_query($sql)))
+		{
+			return $this->get_response("Error: Failed to update last accessed time");
+		}
+
 		switch ($type)
 		{
 			case 'info':
 			{
-				// Retrieve profile data
-				$sql = $this->core->get_info_sql($fingerprint);
-				if (!($result = $this->db->sql_query($sql)))
-				{
-					return $this->get_response("Error: Failed to query profile data");
-				}
-				$data = $this->db->sql_fetchrow($result);
-				$this->db->sql_freeresult($result);
-				if (!$data)
-				{
-					return $this->get_response("Error: No profile data");
-				}
-
-				// Retrieve badge data
-				$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
-				if (!($result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges'])))
-				{
-					return $this->get_response("Error: Failed to query badge data");
-				}
-				// Store all the badge data in an array to loop over it later
-				$badges = array();
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					$badges[] = $row;
-				}
-				$this->db->sql_freeresult($result);
-
-				// Update last accessed time
-				$sql = $this->core->get_update_sql($fingerprint);
-				if (!($result = $this->db->sql_query($sql)))
-				{
-					return $this->get_response("Error: Failed to update last accessed time");
-				}
-
 				$yaml = "Player:\n";
 				$yaml .= "\tFingerprint: " . $data['fingerprint'] . "\n";
 				$yaml .=  "\tPublicKey: " . base64_encode($data['public_key']) . "\n";
@@ -109,6 +109,26 @@ class main
 				break;
 			}
 
+			case 'json':
+			{
+				$json = [
+					'Player' => [
+						'Fingerprint' => $data['fingerprint'],
+						'PublicKey' => base64_encode($data['public_key']),
+						'KeyRevoked' => ($data['revoked'] ? 'true' : 'false'),
+						'ProfileID' => $data['user_id'],
+						'ProfileName' => $data['username'],
+						'ProfileRank' => 'Registered User',
+						'Badges' => $badges,
+					],
+				];
+
+				return $this->get_response($json, true);
+
+				break;
+					
+			}
+
 			default:
 			{
 				return $this->get_response("Error: Unknown route");
@@ -116,10 +136,17 @@ class main
 		}
 	}
 
-	public function get_response($content)
+	public function get_response($content, $json = false)
 	{
-		$response = new Response($content);
-		$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
+		if (!$json) {
+			$response = new Response($content);
+			$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
+		} else {
+			$response = new Response();
+			$response->setContent(json_encode($content, JSON_UNESCAPED_SLASHES));
+			$response->headers->set('Content-Type', 'application/json');
+		}
+
 		return $response;
 	}
 }
