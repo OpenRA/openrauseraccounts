@@ -108,6 +108,15 @@ class main
 						$yaml .=  "\t\tBadge@$i:\n";
 						$yaml .=  "\t\t\tLabel: " . $badge['badge_label'] . "\n";
 						$yaml .=  "\t\t\tIcon24: " . $badge['badge_icon_24'] . "\n";
+
+						$badgelen = strlen($badge['badge_icon_24']);
+						if ($badgelen > 10)
+						{
+							$prefix = substr($badge['badge_icon_24'], 0, $badgelen - 10);
+							$yaml .=  "\t\t\tIcon48: " . $prefix . "_48x48.png\n";
+							$yaml .=  "\t\t\tIcon72: " . $prefix . "_72x72.png\n";
+						}
+
 						$i++;
 					}
 				}
