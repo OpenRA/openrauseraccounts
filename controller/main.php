@@ -46,18 +46,13 @@ class main
 	 */
 	public function fetchinfo($type, $fingerprint)
 	{
-		// Retrieve profile data
+		// Profile data
 		$sql = $this->core->get_info_sql($fingerprint);
-		if (!($result = $this->db->sql_query($sql)))
-		{
-			return $this->get_response("Error: Failed to query profile data");
-		}
+		$result = $this->db->sql_query($sql);
 		$data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 		if (!$data)
-		{
 			return $this->get_response("Error: No profile data");
-		}
 
 		$avatar = [
 			'src' => $this->core->get_avatar_url($data['user_avatar'], $data['user_avatar_type'], $data['user_avatar_width'], $data['user_avatar_height']),
@@ -65,14 +60,10 @@ class main
 			'height' => $data['user_avatar_height']
 		];
 
-		// Retrieve badge data
+		// Badge data
 		$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
-		if (!($result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges'])))
-		{
-			return $this->get_response("Error: Failed to query badge data");
-		}
-		// Store all the badge data in an array to loop over it later
-		$badges = array();
+		$result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges']);
+		$badges = [];
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$badges[] = $row;
@@ -81,11 +72,8 @@ class main
 
 		// Update last accessed time
 		$sql = $this->core->get_update_sql($fingerprint);
-		if (!($result = $this->db->sql_query($sql)))
-		{
-			return $this->get_response("Error: Failed to update last accessed time");
-		}
-		
+		$result = $this->db->sql_query($sql);
+
 		switch ($type)
 		{
 			case 'info':
