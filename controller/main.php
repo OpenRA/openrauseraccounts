@@ -63,6 +63,12 @@ class main
 					return $this->get_response("Error: No profile data");
 				}
 
+				$avatar = [
+					'src' => $this->core->get_avatar_url($data['user_avatar'], $data['user_avatar_type'], $data['user_avatar_width'], $data['user_avatar_height']),
+					'width' => $data['user_avatar_width'],
+					'height' => $data['user_avatar_height']
+				];
+
 				// Retrieve badge data
 				$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
 				if (!($result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges'])))
@@ -92,11 +98,11 @@ class main
 				$yaml .=  "\tProfileName: " . $data['username'] . "\n";
 				$yaml .=  "\tProfileRank: Registered User\n";
 				$yaml .=  "\tAvatar:\n";
-				if ($avatar_data = $this->core->get_avatar_data($data))
+				if ($avatar['src'])
 				{
-					$yaml .=  "\t\tSrc: " . $avatar_data['src'] . "\n";
-					$yaml .=  "\t\tWidth: " . $avatar_data['width'] . "\n";
-					$yaml .=  "\t\tHeight:" . $avatar_data['height'] . "\n";
+					$yaml .=  "\t\tSrc: " . $avatar['src'] . "\n";
+					$yaml .=  "\t\tWidth: " . $avatar['width'] . "\n";
+					$yaml .=  "\t\tHeight:" . $avatar['height'] . "\n";
 				}
 				
 				$yaml .=  "\tBadges:\n";
