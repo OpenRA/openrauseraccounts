@@ -38,13 +38,15 @@ class main
 	}
 
 	/**
-	 * Controller for route /openra/{$type}/{$fingerprint}
+	 * Controller for route /openra/{$type}/{$fingerprint}/{format}
 	 *
-	 * @param string $type, $fingerprint
+	 * @param string $type 
+	 * @param string $fingerprint
+	 * @param string $format Response format, default value is 'MiniYAML'
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response A Symfony Response object
 	 */
-	public function fetchinfo($type, $fingerprint)
+	public function fetchinfo($type, $fingerprint, $format)
 	{
 		// Profile data
 		$sql = $this->core->get_info_sql($fingerprint);
@@ -52,7 +54,7 @@ class main
 		$data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 		if (!$data)
-			return $this->get_response("Error: No profile data");
+			return $this->get_response("Error: No profile data", $format);
 
 		$avatar = [
 			'src' => $this->core->get_avatar_url($data['user_avatar'], $data['user_avatar_type'], $data['user_avatar_width'], $data['user_avatar_height']),
@@ -106,19 +108,19 @@ class main
 					}
 				}
 
-				return $this->get_response($yaml);
+				return $this->get_response($yaml, $format);
 
 				break;
 			}
 
 			default:
 			{
-				return $this->get_response("Error: Unknown route");
+				return $this->get_response("Error: Unknown route", $format);
 			}
 		}
 	}
 
-	public function get_response($content)
+	public function get_response($content, $format)
 	{
 		$response = new Response($content);
 		$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
