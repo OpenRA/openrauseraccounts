@@ -219,11 +219,11 @@ class core
 		{
 			$avatar_data['src'] = $this->get_gravatar_url($row);
 		}
-		else if ($user_data['user_avatar_type'] === 'avatar.driver.upload')
+		else if ($user_data['user_avatar_type'] === 'avatar.driver.upload' || $user_data['user_avatar_type'] == 1)
 		{
 			$avatar_data['src'] = $this->get_upload_avatar_url($user_data['user_avatar']);
 		}
-		else if ($user_data['user_avatar_type'] === 'avatar.driver.local')
+		else if ($user_data['user_avatar_type'] === 'avatar.driver.local' || $user_data['user_avatar_type'] == 3)
 		{
 			$avatar_data['src'] = $this->get_local_avatar_url($user_data['user_avatar']);
 		}
