@@ -46,50 +46,50 @@ class main
 	 */
 	public function fetchinfo($type, $fingerprint)
 	{
+		// Retrieve profile data
+		$sql = $this->core->get_info_sql($fingerprint);
+		if (!($result = $this->db->sql_query($sql)))
+		{
+			return $this->get_response("Error: Failed to query profile data");
+		}
+		$data = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+		if (!$data)
+		{
+			return $this->get_response("Error: No profile data");
+		}
+
+		$avatar = [
+			'src' => $this->core->get_avatar_url($data['user_avatar'], $data['user_avatar_type'], $data['user_avatar_width'], $data['user_avatar_height']),
+			'width' => $data['user_avatar_width'],
+			'height' => $data['user_avatar_height']
+		];
+
+		// Retrieve badge data
+		$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
+		if (!($result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges'])))
+		{
+			return $this->get_response("Error: Failed to query badge data");
+		}
+		// Store all the badge data in an array to loop over it later
+		$badges = array();
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$badges[] = $row;
+		}
+		$this->db->sql_freeresult($result);
+
+		// Update last accessed time
+		$sql = $this->core->get_update_sql($fingerprint);
+		if (!($result = $this->db->sql_query($sql)))
+		{
+			return $this->get_response("Error: Failed to update last accessed time");
+		}
+		
 		switch ($type)
 		{
 			case 'info':
 			{
-				// Retrieve profile data
-				$sql = $this->core->get_info_sql($fingerprint);
-				if (!($result = $this->db->sql_query($sql)))
-				{
-					return $this->get_response("Error: Failed to query profile data");
-				}
-				$data = $this->db->sql_fetchrow($result);
-				$this->db->sql_freeresult($result);
-				if (!$data)
-				{
-					return $this->get_response("Error: No profile data");
-				}
-
-				$avatar = [
-					'src' => $this->core->get_avatar_url($data['user_avatar'], $data['user_avatar_type'], $data['user_avatar_width'], $data['user_avatar_height']),
-					'width' => $data['user_avatar_width'],
-					'height' => $data['user_avatar_height']
-				];
-
-				// Retrieve badge data
-				$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
-				if (!($result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges'])))
-				{
-					return $this->get_response("Error: Failed to query badge data");
-				}
-				// Store all the badge data in an array to loop over it later
-				$badges = array();
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					$badges[] = $row;
-				}
-				$this->db->sql_freeresult($result);
-
-				// Update last accessed time
-				$sql = $this->core->get_update_sql($fingerprint);
-				if (!($result = $this->db->sql_query($sql)))
-				{
-					return $this->get_response("Error: Failed to update last accessed time");
-				}
-
 				$yaml = "Player:\n";
 				$yaml .= "\tFingerprint: " . $data['fingerprint'] . "\n";
 				$yaml .=  "\tPublicKey: " . base64_encode($data['public_key']) . "\n";
