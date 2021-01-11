@@ -38,96 +38,115 @@ class main
 	}
 
 	/**
-	 * Controller for route /openra/{$type}/{$fingerprint}
+	 * Controller for route /openra/{$type}/{$fingerprint}/{format}
 	 *
-	 * @param string $type, $fingerprint
+	 * @param string $type 
+	 * @param string $fingerprint
+	 * @param string $format Response format, default value is 'MiniYAML'
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response A Symfony Response object
 	 */
-	public function fetchinfo($type, $fingerprint)
+	public function fetchinfo($type, $fingerprint, $format)
 	{
+		// Profile data
+		$sql = $this->core->get_info_sql($fingerprint);
+		$result = $this->db->sql_query($sql);
+		$data = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+		if (!$data)
+			return $this->get_response("Error: No profile data", $format);
+
+		$avatar = [
+			'src' => $this->core->get_avatar_url($data['user_avatar'], $data['user_avatar_type'], $data['user_avatar_width'], $data['user_avatar_height']),
+			'width' => $data['user_avatar_width'],
+			'height' => $data['user_avatar_height']
+		];
+
+		// Badge data
+		$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
+		$result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges']);
+		$badges = [];
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$badges[] = $row;
+		}
+		$this->db->sql_freeresult($result);
+
+		// Update last accessed time
+		$sql = $this->core->get_update_sql($fingerprint);
+		$result = $this->db->sql_query($sql);
+
 		switch ($type)
 		{
 			case 'info':
 			{
-				// Retrieve profile data
-				$sql = $this->core->get_info_sql($fingerprint);
-				if (!($result = $this->db->sql_query($sql)))
+				if (strtolower($format) !== "json")
 				{
-					return $this->get_response("Error: Failed to query profile data");
-				}
-				$data = $this->db->sql_fetchrow($result);
-				$this->db->sql_freeresult($result);
-				if (!$data)
-				{
-					return $this->get_response("Error: No profile data");
-				}
-
-				// Retrieve badge data
-				$sql = $this->core->get_ubadge_sql_by_key($fingerprint);
-				if (!($result = $this->db->sql_query_limit($sql, $this->config['max_profile_badges'])))
-				{
-					return $this->get_response("Error: Failed to query badge data");
-				}
-				// Store all the badge data in an array to loop over it later
-				$badges = array();
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					$badges[] = $row;
-				}
-				$this->db->sql_freeresult($result);
-
-				// Update last accessed time
-				$sql = $this->core->get_update_sql($fingerprint);
-				if (!($result = $this->db->sql_query($sql)))
-				{
-					return $this->get_response("Error: Failed to update last accessed time");
-				}
-
-				$yaml = "Player:\n";
-				$yaml .= "\tFingerprint: " . $data['fingerprint'] . "\n";
-				$yaml .=  "\tPublicKey: " . base64_encode($data['public_key']) . "\n";
-				$yaml .=  "\tKeyRevoked: " . ($data['revoked'] ? 'true' : 'false') . "\n";
-				$yaml .=  "\tProfileID: " . $data['user_id'] . "\n";
-				$yaml .=  "\tProfileName: " . $data['username'] . "\n";
-				$yaml .=  "\tProfileRank: Registered User\n";
-				$yaml .=  "\tAvatar:\n";
-				if ($avatar_data = $this->core->get_avatar_data($data))
-				{
-					$yaml .=  "\t\tSrc: " . $avatar_data['src'] . "\n";
-					$yaml .=  "\t\tWidth: " . $avatar_data['width'] . "\n";
-					$yaml .=  "\t\tHeight:" . $avatar_data['height'] . "\n";
-				}
-				
-				$yaml .=  "\tBadges:\n";
-				if ($badges)
-				{
-					$i = 0;
-					foreach ($badges as $badge)
+					$content = "Player:\n";
+					$content .= "\tFingerprint: " . $data['fingerprint'] . "\n";
+					$content .=  "\tPublicKey: " . base64_encode($data['public_key']) . "\n";
+					$content .=  "\tKeyRevoked: " . ($data['revoked'] ? 'true' : 'false') . "\n";
+					$content .=  "\tProfileID: " . $data['user_id'] . "\n";
+					$content .=  "\tProfileName: " . $data['username'] . "\n";
+					$content .=  "\tProfileRank: Registered User\n";
+					$content .=  "\tAvatar:\n";
+					if ($avatar['src'])
 					{
-						$yaml .=  "\t\tBadge@$i:\n";
-						$yaml .=  "\t\t\tLabel: " . $badge['badge_label'] . "\n";
-						$yaml .=  "\t\t\tIcon24: " . $badge['badge_icon_24'] . "\n";
-						$i++;
+						$content .=  "\t\tSrc: " . $avatar['src'] . "\n";
+						$content .=  "\t\tWidth: " . $avatar['width'] . "\n";
+						$content .=  "\t\tHeight:" . $avatar['height'] . "\n";
 					}
+					
+					$content .=  "\tBadges:\n";
+					if ($badges)
+					{
+						$i = 0;
+						foreach ($badges as $badge)
+						{
+							$content .=  "\t\tBadge@$i:\n";
+							$content .=  "\t\t\tLabel: " . $badge['badge_label'] . "\n";
+							$content .=  "\t\t\tIcon24: " . $badge['badge_icon_24'] . "\n";
+							$i++;
+						}
+					}
+				} else {
+					$content = [
+						'Player' => [
+							'Fingerprint' => $data['fingerprint'],
+							'PublicKey' => base64_encode($data['public_key']),
+							'KeyRevoked' => ($data['revoked'] ? 'true' : 'false'),
+							'ProfileID' => $data['user_id'],
+							'ProfileName' => $data['username'],
+							'ProfileRank' => 'Registered User',
+							'Avatar' => $avatar,
+							'Badges' => $badges,
+						]
+					];
 				}
 
-				return $this->get_response($yaml);
+				return $this->get_response($content, $format);
 
 				break;
 			}
 
 			default:
 			{
-				return $this->get_response("Error: Unknown route");
+				return $this->get_response("Error: Unknown route", $format);
 			}
 		}
 	}
 
-	public function get_response($content)
+	public function get_response($content, $format)
 	{
-		$response = new Response($content);
-		$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
+		if (strtolower($format) !== "json")
+		{
+			$response = new Response($content);
+			$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
+		} else {
+			$response = new Response();
+			$response->setContent(json_encode($content, JSON_UNESCAPED_SLASHES));
+			$response->headers->set('Content-Type', 'application/json');
+		}
 		return $response;
 	}
 }
