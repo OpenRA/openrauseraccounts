@@ -80,35 +80,51 @@ class main
 		{
 			case 'info':
 			{
-				$yaml = "Player:\n";
-				$yaml .= "\tFingerprint: " . $data['fingerprint'] . "\n";
-				$yaml .=  "\tPublicKey: " . base64_encode($data['public_key']) . "\n";
-				$yaml .=  "\tKeyRevoked: " . ($data['revoked'] ? 'true' : 'false') . "\n";
-				$yaml .=  "\tProfileID: " . $data['user_id'] . "\n";
-				$yaml .=  "\tProfileName: " . $data['username'] . "\n";
-				$yaml .=  "\tProfileRank: Registered User\n";
-				$yaml .=  "\tAvatar:\n";
-				if ($avatar['src'])
+				if (strtolower($format) !== "json")
 				{
-					$yaml .=  "\t\tSrc: " . $avatar['src'] . "\n";
-					$yaml .=  "\t\tWidth: " . $avatar['width'] . "\n";
-					$yaml .=  "\t\tHeight:" . $avatar['height'] . "\n";
-				}
-				
-				$yaml .=  "\tBadges:\n";
-				if ($badges)
-				{
-					$i = 0;
-					foreach ($badges as $badge)
+					$content = "Player:\n";
+					$content .= "\tFingerprint: " . $data['fingerprint'] . "\n";
+					$content .=  "\tPublicKey: " . base64_encode($data['public_key']) . "\n";
+					$content .=  "\tKeyRevoked: " . ($data['revoked'] ? 'true' : 'false') . "\n";
+					$content .=  "\tProfileID: " . $data['user_id'] . "\n";
+					$content .=  "\tProfileName: " . $data['username'] . "\n";
+					$content .=  "\tProfileRank: Registered User\n";
+					$content .=  "\tAvatar:\n";
+					if ($avatar['src'])
 					{
-						$yaml .=  "\t\tBadge@$i:\n";
-						$yaml .=  "\t\t\tLabel: " . $badge['badge_label'] . "\n";
-						$yaml .=  "\t\t\tIcon24: " . $badge['badge_icon_24'] . "\n";
-						$i++;
+						$content .=  "\t\tSrc: " . $avatar['src'] . "\n";
+						$content .=  "\t\tWidth: " . $avatar['width'] . "\n";
+						$content .=  "\t\tHeight:" . $avatar['height'] . "\n";
 					}
+					
+					$content .=  "\tBadges:\n";
+					if ($badges)
+					{
+						$i = 0;
+						foreach ($badges as $badge)
+						{
+							$content .=  "\t\tBadge@$i:\n";
+							$content .=  "\t\t\tLabel: " . $badge['badge_label'] . "\n";
+							$content .=  "\t\t\tIcon24: " . $badge['badge_icon_24'] . "\n";
+							$i++;
+						}
+					}
+				} else {
+					$content = [
+						'Player' => [
+							'Fingerprint' => $data['fingerprint'],
+							'PublicKey' => base64_encode($data['public_key']),
+							'KeyRevoked' => ($data['revoked'] ? 'true' : 'false'),
+							'ProfileID' => $data['user_id'],
+							'ProfileName' => $data['username'],
+							'ProfileRank' => 'Registered User',
+							'Avatar' => $avatar,
+							'Badges' => $badges,
+						]
+					];
 				}
 
-				return $this->get_response($yaml, $format);
+				return $this->get_response($content, $format);
 
 				break;
 			}
@@ -122,8 +138,15 @@ class main
 
 	public function get_response($content, $format)
 	{
-		$response = new Response($content);
-		$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
+		if (strtolower($format) !== "json")
+		{
+			$response = new Response($content);
+			$response->headers->set('Content-Type', 'Content-type: text/plain; charset=utf-8');
+		} else {
+			$response = new Response();
+			$response->setContent(json_encode($content, JSON_UNESCAPED_SLASHES));
+			$response->headers->set('Content-Type', 'application/json');
+		}
 		return $response;
 	}
 }
