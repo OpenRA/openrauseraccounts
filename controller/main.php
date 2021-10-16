@@ -96,7 +96,7 @@ class main
 				{
 					$yaml .=  "\t\tSrc: " . $avatar_data['src'] . "\n";
 					$yaml .=  "\t\tWidth: " . $avatar_data['width'] . "\n";
-					$yaml .=  "\t\tHeight:" . $avatar_data['height'] . "\n";
+					$yaml .=  "\t\tHeight: " . $avatar_data['height'] . "\n";
 				}
 				
 				$yaml .=  "\tBadges:\n";
