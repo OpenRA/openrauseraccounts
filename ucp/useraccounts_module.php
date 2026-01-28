@@ -54,8 +54,7 @@ class useraccounts_module
 		// Example: <input name="action[foo]" value="Foobar">.
 		// - $action = array(1) {["foo"]=>string(6) "Foobar"}
 		// - Return only the key for the current key and value pair as string.
-		$action = $this->request->variable('action', array('' => ''));
-		list($action, ) = each($action);
+		$action = key($this->request->variable('action', array('' => '')));
 
 		// Generalized actions:
 		$submit = $action == 'submit';
