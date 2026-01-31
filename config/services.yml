@@ -5,6 +5,9 @@ services:
             - '@openra.openrauseraccounts.core'
             - '@dbal.conn'
             - '@config'
+            - '@request'
+            - '@passwords.manager'
+            - '%core.table_prefix%'
     openra.openrauseraccounts.core:
         class: openra\openrauseraccounts\core\core
         arguments:
