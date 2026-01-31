@@ -43,7 +43,7 @@ class core
 	public function get_info_sql($fingerprint)
 	{
 		$sql_array = array(
-			'SELECT' => 'pubkey.item_id, pubkey.user_id, pubkey.public_key, pubkey.fingerprint, pubkey.revoked, user.username, user.user_avatar, user.user_avatar_type, user.user_avatar_width, user.user_avatar_height',
+			'SELECT' => 'pubkey.item_id, pubkey.user_id, pubkey.public_key, pubkey.fingerprint, pubkey.revoked, user.username, user.user_regdate, user.user_avatar, user.user_avatar_type, user.user_avatar_width, user.user_avatar_height',
 
 			'FROM' => array(
 				USERS_TABLE => 'user',
