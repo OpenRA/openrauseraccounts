@@ -91,6 +91,7 @@ class main
 				$yaml .= "\tProfileID: " . $data['user_id'] . "\n";
 				$yaml .= "\tProfileName: " . $data['username'] . "\n";
 				$yaml .= "\tProfileRank: Registered User\n";
+				$yaml .= "\tJoined: " . gmdate("Y-m-d H:i:s", $data['user_regdate']) . "\n";
 				$yaml .= "\tAvatar:\n";
 				if ($avatar_data = $this->core->get_avatar_data($data))
 				{
