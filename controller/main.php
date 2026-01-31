@@ -86,19 +86,20 @@ class main
 
 				$yaml = "Player:\n";
 				$yaml .= "\tFingerprint: " . $data['fingerprint'] . "\n";
-				$yaml .=  "\tPublicKey: " . base64_encode($data['public_key']) . "\n";
-				$yaml .=  "\tKeyRevoked: " . ($data['revoked'] ? 'true' : 'false') . "\n";
-				$yaml .=  "\tProfileID: " . $data['user_id'] . "\n";
-				$yaml .=  "\tProfileName: " . $data['username'] . "\n";
-				$yaml .=  "\tProfileRank: Registered User\n";
-				$yaml .=  "\tAvatar:\n";
+				$yaml .= "\tPublicKey: " . base64_encode($data['public_key']) . "\n";
+				$yaml .= "\tKeyRevoked: " . ($data['revoked'] ? 'true' : 'false') . "\n";
+				$yaml .= "\tProfileID: " . $data['user_id'] . "\n";
+				$yaml .= "\tProfileName: " . $data['username'] . "\n";
+				$yaml .= "\tProfileRank: Registered User\n";
+				$yaml .= "\tJoined: " . gmdate("Y-m-d H:i:s", $data['user_regdate']) . "\n";
+				$yaml .= "\tAvatar:\n";
 				if ($avatar_data = $this->core->get_avatar_data($data))
 				{
 					$yaml .=  "\t\tSrc: " . $avatar_data['src'] . "\n";
 					$yaml .=  "\t\tWidth: " . $avatar_data['width'] . "\n";
 					$yaml .=  "\t\tHeight: " . $avatar_data['height'] . "\n";
 				}
-				
+
 				$yaml .=  "\tBadges:\n";
 				if ($badges)
 				{
