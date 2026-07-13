@@ -5,6 +5,8 @@ services:
             - '@openra.openrauseraccounts.core'
             - '@dbal.conn'
             - '@config'
+            - '@request'
+            - '@auth.provider_collection'
     openra.openrauseraccounts.core:
         class: openra\openrauseraccounts\core\core
         arguments:
